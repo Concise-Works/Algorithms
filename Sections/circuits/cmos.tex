@@ -464,6 +464,8 @@ This section will cover how we take MOSFETs and use them to build logic gates.
 
 \begin{Example}[Functionally Complete Sets of Operators]
 
+  \label{ex:functionally_complete_sets}
+
     \begin{enumerate}
   \item $\{\mathrm{NAND}\}$ alone
     \begin{align*}
@@ -578,9 +580,50 @@ Let's brainstorm possibilities for an AND and NAND, and elaborate on Defintition
   \label{fig:nand-2}
 \end{figure}
 
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/nand_3.png}
+  \caption{Both inputs are (1,0), PUN half-closed reaching the output, PDN half-closed, but can't reach ground; Hence the output is high (1).}
+  \label{fig:nand-3}
+\end{figure}
+
 \newpage 
 
 \noindent
-(Taking a break from writing. I intended to write all the way to show 
-how with the PUN and PDN configurations achieve binary addition, subtraction, multiplication, and division.
-But I think this is enough for now. I will come back to it later.)
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/nand_4.png}
+  \caption{Both inputs are (1,1), PUN fully closed, PDN open grounding the output to (0).}
+  \label{fig:nand-4}
+\end{figure}
+\\
+
+\newpage
+\begin{theo}[Modeling Functions via PUNs]
+
+  \label{theo:modeling_functions_pun}
+
+  \noindent
+  FETs in Series yields an AND, and in parallel yields an OR. Below we 
+  have the function\\
+  $F=\overline{A} + \overline{B} \cdot \overline{C}$: (1) shows the PUN network, and then we 
+  design a complementary PDN network in (2) to balance the circuit:
+
+  \begin{center}
+    \includegraphics[width=\textwidth]{Sections/circuits/pun_pdn_nand.png}
+  \end{center}
+\end{theo}
+
+\begin{Note}
+\textbf{Note:} Since PUNs are by default high, other functions may not be as straightforward, requiring 
+  us to invert or adjust our logic to achieve the desired output.
+\end{Note}
+
+\newpage
+
+
+
+% \noindent
+% (Taking a break from writing. I intended to write all the way to show 
+% how with the PUN and PDN configurations achieve binary addition, subtraction, multiplication, and division.
+% But I think this is enough for now. I will come back to it later.)
