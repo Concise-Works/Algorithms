@@ -37,7 +37,7 @@ The next problem deals with multiple processes allocating and deallocating memor
 
     \noindent
     Where $O$ represents free space in our array, each cell 1 GiB of space. If we have processes $A$ and $B$ take 1 and 2 GiBs respectively, we might have a memory layout of:
-    $$[A, B, B, O,]$$
+    $$[A, B, B, O]$$
 
     \noindent
     If we then free process $A$, we might have a memory layout of:
@@ -59,7 +59,7 @@ Now finally we have the problem of protecting memory from other processes:
 \end{Def}
 
 \noindent
-So in theory we want to give each process it s own portion of memory, to solve overlapping access:
+So in theory we want to give each process its own portion of memory, to solve overlapping access:
 \begin{Def}[Virtual Memory]
 
     To solve process memory collisions, we give each process its own fictional view of memory, called \textbf{virtual memory}.
@@ -202,8 +202,8 @@ We discuss the following on the next page.
 \begin{theo}[Converting Virtual to Physical Memory]
 
     Addresses are binary numbers, typically represents as hexadecimal (base 16) numbers.
-
-
+    
+    \noindent 
     The first 12 bits of an address is the \textbf{offset}. The remaining higher-order bits yields the \textbf{page number}. To find the physical address, take the last 12 bits of the address, index the higher-order bits into the page table, and append the offset to the physical page number.
 \end{theo}
 
@@ -226,11 +226,15 @@ So far we have discussed how the mapping system of virtual memory works, but now
 \begin{Def}[Swapping on Page Faults]
 
     A \textbf{page fault} occurs when a program tries to access a page that does not have a mapping in the page table. 
-    The OS then picks the \textbf{least recently used (LRU)} page in the page table, and swaps it out to external storage. A page is \textbf{dirty} if it has been written to. In 
+    The OS uses a replacement strategy to evict a page in the page table, swapping it out to disk. 
+    Typically, the \textbf{least recently used (LRU)} page is evicted, though some systems use a \textbf{first in first out (FIFO)} or \textbf{least frequently used (LFU)} strategy.\\
+    
+    \noindent
+    A page is \textbf{dirty} if it has been written to. In 
     such case, we write back its contents to external storage before swapping. If the page is not dirty, we may discard it on swap.
 \end{Def}
 
-\vspace{-1em}
+\vspace{-2em}
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{Sections/virt/pagefault.png}
