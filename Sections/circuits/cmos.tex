@@ -457,9 +457,9 @@ This section will cover how we take MOSFETs and use them to build logic gates.
 
   \label{def:functional_completeness}
 
- it can be used to express all possible Boolean functions.
+ A function is \textbf{functionally complete} if it can expresses all possible Boolean functions.
     For example, the set of operators $\{\text{AND, OR, NOT}\}$ is functionally complete.
-    However, we can do better. The NAND gate (and NOR gate) by itself is functionally complete.
+    The NAND (NOT AND) or NOR (NOT OR) operators by themselves are functionally complete.
 \end{Def}
 
 \begin{Example}[Functionally Complete Sets of Operators]
@@ -578,9 +578,112 @@ Let's brainstorm possibilities for an AND and NAND, and elaborate on Defintition
   \label{fig:nand-2}
 \end{figure}
 
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/nand_3.png}
+  \caption{Both inputs are (1,0), PUN half-closed reaching the output, PDN half-closed, but doesn't affect the output; Hence the output is high (1).}
+  \label{fig:nand-3}
+\end{figure}
+
+\vfill
+
+\clearpage
+\newpage
+
+
+\noindent
+To continue with the last case:\\
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/nand_4.png}
+  \caption{Both inputs are (1,1), PUN open, PDN closed reaching the output; Hence the output is low (0).}
+  \label{fig:nand-4}
+\end{figure}
+
+
+
+\vspace{1em}
+\subsection{CMOS Timing Specifications:}
+
+\noindent
+We touched briefly on timing specifications in Def (\ref{def:combinational_device}). We fullen
+the picture with the following definition:
+\begin{Def}[Contamination Delay ($t_{CD}$) \& Propagation Delay ($t_{PD}$)]
+
+  \label{def:contamination_delay}
+
+  \noindent
+  In CMOS circuits, there are two main timing specifications to consider:
+  \begin{itemize}
+    \item \textbf{Propagation Delay} ($t_{PD}$): The maximum time for an input to stabilize at the output.
+    \item \textbf{Contamination Delay} ($t_{CD}$): The minimum time delay an input remains unreflected at the output. I.e.,
+    how long the old value lingers before change is detected at the output.
+  \end{itemize}
+
+  \noindent
+  Manufacturers often call Contamination delay the \textbf{Minimum Propagation Delay}. These specifications help 
+  manufacturers to verify signal coherence when designing circuits.
+\end{Def}
+
+\noindent
+Let's take a look at an example on the next page.
+
 \newpage 
 
 \noindent
-(Taking a break from writing. I intended to write all the way to show 
-how with the PUN and PDN configurations achieve binary addition, subtraction, multiplication, and division.
-But I think this is enough for now. I will come back to it later.)
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/tpdc_1.png}
+  \caption{Observe the following inverter circuit receiving a high voltage (1) at the top-left of the diagram.
+  Below strips away the symbol, showing the CMOS implementation; Here, the PUN is open, while the PDN is closed, relaying a low voltage (0) to the output.
+Now observe the waveforms on the right; Here, the y-axis 
+  represents voltage-level, and the x-axis represents time. Assuming we began with no voltage applied (0) at the input, when we apply
+  a high voltage (1), it takes short time for $V_{IN}$ to reach a readable high voltage (1).
+  At the same time, the output $V_{OUT}$ begins to drop from high (1) to low (0). Vice-versa when we take away power again from the input, shown as the 0 mark.}
+  \label{fig:tpdc-1}
+\end{figure}
+
+\noindent
+Now to calculate an overall $t_{PD}$ and $t_{CD}$ for a circuit:
+\begin{Def}[Total Propagation \& Contamination Delay]
+
+  \label{def:overall_tpdc}
+
+  \noindent
+  For a circuit with multiple logic gates, the overall timing specifications are calculated as follows:
+  \begin{itemize}
+    \item \textbf{Overall Propagation Delay} ($t_{PD}$): The sum of the individual propagation delays of each gate along the longest path from input to output.
+    \item \textbf{Overall Contamination Delay} ($t_{CD}$): The sum of the individual contamination delays of each gate along the shortest path from input to output.
+  \end{itemize}
+
+  \noindent
+  \textbf{Note:} Longest/shortest path refers to time spent, not the number of gates.
+\end{Def}
+
+\begin{figure}[ht!]
+  
+  \hspace{-13em} \includegraphics[width=1.5\textwidth]{Sections/circuits/tpdc_2.png}
+  \caption{Zooming into the transition period, we can observe the timing specifications.
+  The \textbf{Propagation Delay} ($t_{PD}$) is measured from when $V_{IN}$ reaches a readable high voltage (1) to when $V_{OUT}$ reaches a readable low voltage (0).
+  The \textbf{Contamination Delay} ($t_{CD}$) is measured from when $V_{IN}$ begins to rise from low (0) to when $V_{OUT}$ begins to drop from high (1).
+  Here we include both $V_{IH}$, $V_{IL}$, $V_{OH}$, and $V_{OL}$ as described in Definition (\ref{def:noise_margins}).}
+  \label{fig:tpdc-2}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/tpdc_3.png}
+  \caption{This circuit only consists of NAND gates, all of which have $t_{PD} = 4ns$ and $t_{CD} = 1ns$.
+  The longest path from input to output is the ordered set ${1, 3, 4}$, hence the overall propagation delay is $t_{PD} = 4ns + 4ns + 4ns = 12ns$.
+  The shortest path from input to output is the ordered set ${2, 4}$, hence the overall contamination delay is $t_{CD} = 1ns + 1ns = 2ns$.}
+  \label{fig:tpdc-3}
+\end{figure}
+
+
+\newpage
+% \noindent
+% (Taking a break from writing. I intended to write all the way to show 
+% how with the PUN and PDN configurations achieve binary addition, subtraction, multiplication, and division.
+% But I think this is enough for now. I will come back to it later.)
