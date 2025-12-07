@@ -601,7 +601,36 @@ To continue with the last case:\\
   \label{fig:nand-4}
 \end{figure}
 
+\begin{theo}[Modeling Functions via PUNs]
 
+  \label{theo:modeling_functions_pun}
+
+  \noindent
+  FETs in Series yields an AND, and in parallel yields an OR. Below we 
+  have the function\\
+  $F=\overline{A} + \overline{B} \cdot \overline{C}$: (1) shows the PUN network, and then we 
+  design a complementary PDN network in (2) to balance the circuit:
+
+  \begin{center}
+    \includegraphics[width=\textwidth]{Sections/circuits/pun_pdn_nand.png}
+  \end{center}
+\end{theo}
+
+\begin{Note}
+\textbf{Note:} Since PUNs are by default high, they naturally invert logic, requiring 
+  us to invert again or adjust logic for other functions which do not require inversion.
+\end{Note}
+
+\newpage 
+
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/pun_pdn_nand_full.png}
+  \caption{The complete CMOS logic gate for $F=\overline{A} + \overline{B} \cdot \overline{C}$.
+  Here, the PUN is shown on top, and the PDN on the bottom.}
+  \label{fig:pun-pdn-nand-2}
+\end{figure}
 
 \vspace{1em}
 \subsection{CMOS Timing Specifications:}
