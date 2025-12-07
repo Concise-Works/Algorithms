@@ -688,8 +688,13 @@ Now to calculate an overall $t_{PD}$ and $t_{CD}$ for a circuit:
   \end{itemize}
 
   \noindent
-  \textbf{Note:} Longest/shortest path refers to time spent, not the number of gates.
+  \textbf{To clarify:} Longest/shortest path refers to time spent, not the number of gates.
 \end{Def}
+
+\begin{Note}
+\textbf{Note:} In the next Diagram (\ref{fig:tpdc-2}) $t_{PD}$ and $t_{CD}$ are illustrated apart from each other. However, this 
+is just for clarity; In reality, $t_{CD}$ is a subset of $t_{PD}$, both starting at the same time. I.e., $t_{CD} \leq t_{PD}$.
+\end{Note}
 
 \begin{figure}[ht!]
   

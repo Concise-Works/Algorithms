@@ -1,0 +1,119 @@
+\newpage
+\subsection{Combinational Logic}
+
+Truth tables quickly grow as $n$ inputs lead to $2^n$ rows in the truth table. So instead, 
+we model functions using boolean algebra (e.g., $F = A \cdot B + \overline{C}$), and then implement them using logic gates.
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=.9\textwidth]{Sections/circuits/comb/comb.png}
+  \caption{1) Shows the desired circuit function, 2) the corresponding truth table, and 3) the boolean logic. From the 
+  truth table, we can pick a row, substituting the inputs $A$, $B$, and $C$ into the boolean expression, we expect to see the output corresponding to $F$.
+  For example, row 3, $F=\overline{C}\overline{B}A+\overline{C}BA+CB\overline{A}+CBA$, is, $0 = (\overline{0}\cdot 1 \cdot 0) + (\overline{0} \cdot 1 \cdot 0) + (0 \cdot 1 \cdot 0) + (0 \cdot 1 \cdot 0).$}
+  \label{fig:comb-logic}
+\end{figure}
+
+\begin{Def}[Logic Gates]
+
+    Below are the common logic gates with the addition of the resistor which limits current:
+    \begin{center}
+        \includegraphics[width=.8\textwidth]{Sections/circuits/comb/logic_gates.png}
+    \end{center}
+
+    \noindent
+    The resistor has many symbols; However, we focus purely on logic gates in this text, and how we can make 
+    more complex logical systems from these basic building blocks.
+\end{Def}
+
+\newpage 
+
+\noindent
+For example, lets consider just NOT, AND, and OR gates and their truth tables:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=.9\textwidth]{Sections/circuits/comb/logic_gates_2.png}
+  \caption{1) NOT gate 2) AND gate 3) OR gate. Recall that inside these gates is a combination of PUNs and PDNs to achieve the desired logic, which here we have abstracted away.}
+  \label{fig:nand-nor}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/logic_gates_3.png}
+  \caption{Modeling $F=\overline{C}\overline{B}A+\overline{C}BA+CB\overline{A}+CBA$ with logic gates. Note, 
+  we see that the ANDS and ORS have more than 2 inputs; They operate the same way as their 2-input counterparts, just with more inputs.}
+  \label{fig:logic-gates-model}
+\end{figure}
+
+\newpage 
+
+\begin{theo}[Increasing Gate Input Size]
+
+    Above in Figure \ref{fig:logic-gates-model}, we see AND and OR gates with more than 2 inputs. There are 
+    multiple ways to implement these larger gates, observe below:\\
+
+    \noindent
+    \includegraphics[width=1\textwidth]{Sections/circuits/comb/increase_gate.png}\\
+
+    \noindent
+    1) is a 3 input gate, and 2) is a 4 input gate; This method of attaching the gates in sequential order is called
+    \textbf{chaining}. 3) takes a different approach and instead uses a \textbf{tree method}.\\
+
+    \noindent
+    \rule{\textwidth}{0.4pt}\\
+    
+    \noindent
+    In terms of $t_{PD}$, assuming all gates have the same delay, \underline{\textbf{chaining grows linearly}} with the number of inputs, and
+    the \underline{\textbf{tree method grows logarithmically}} with the number of inputs.
+
+    \textbf{However}, if the gates were to have \textbf{different delays}, introduces \textbf{bottlenecks}; In the case of the tree method, getting 
+    an input like $D$ introduces a longer path, while in the sequential method, $D$ has less impact on the overall delay.
+    \end{theo}
+
+\begin{theo}[NAND AND NOR - Gate Increase Problem \& Efficiency]
+
+    \underline{NAND and NOR are \textbf{not associative} like AND and OR.} This means that we cannot use the chaining or tree method
+    to increase the number of inputs for NAND and NOR gates.\\
+
+    \noindent
+    Additionally, NAND and NOR gates are more efficient in CMOS logic, as CMOS is naturally inverting with PUNs and PDNs. Thus, their implementations
+    are simpler than AND and OR gates.
+\end{theo}
+
+\noindent
+To further illustrate that NAND and NOR are functionally complete, observe the below diagram:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1.1\textwidth]{Sections/circuits/comb/nand_nor_fp.png}
+  \caption{ This diagram shows that NOT, AND, and OR gates can be constructed purely from NAND (left) or NOR (right) gates.}
+  \label{fig:nand-nor-complete}
+\end{figure}
+
+\begin{theo}[Increasing NAND Gate Input Size with 2-input NANDs]
+
+    \label{theo:nand-increase}
+
+    Start with the desired function, e.g., $\overline{A \cdot B \cdot C}$, for clarity $\texttt{NAND}(A,B,C)$.
+    We attempt to group inputs into pairs of 2, using identities from Figure (\ref{fig:nand-nor-complete}): $\texttt{NAND}(A,B,C) = \texttt{NOT}(\texttt{AND}(A,B,C))$.
+    Now we group:
+    $\texttt{NOT}(\texttt{AND}(A,B,C)) = \texttt{NOT}(\texttt{AND}(\texttt{AND}(A,B),C))$, and we are done:\\
+
+    \noindent
+    \includegraphics[width=1\textwidth]{Sections/circuits/comb/increase_gate2.png}\\
+    \noindent
+    To only use NAND gates, we can start simplifying by bringing the NOT and AND back together:
+    $\texttt{NAND}(\texttt{AND}(A,B),C)$. Though we still have an AND gate, we can replace it with NANDs using Figure \ref{fig:nand-nor-complete}:\\
+    
+    \noindent
+    \includegraphics[width=1\textwidth]{Sections/circuits/comb/increase_gate3.png}
+
+\end{theo}
+
+
+\begin{Note}
+\textbf{Note:} As we've mentioned before,
+chaining vs. tree methods vary differently on $t_{PD}$. Additionally notice that the size of our circuit can fluctuate based
+on how we decide to break down our boolean expression. In the above Theorem (\ref{theo:nand-increase}), if we assume
+AND gates are slower than NAND gates in this system, the simplified NAND version is faster, and smaller, assuming AND gates are composed of multiple NANDs.
+\end{Note}
