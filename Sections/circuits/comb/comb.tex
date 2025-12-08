@@ -117,3 +117,26 @@ chaining vs. tree methods vary differently on $t_{PD}$. Additionally notice that
 on how we decide to break down our boolean expression. In the above Theorem (\ref{theo:nand-increase}), if we assume
 AND gates are slower than NAND gates in this system, the simplified NAND version is faster, and smaller, assuming AND gates are composed of multiple NANDs.
 \end{Note}
+
+\newpage 
+
+\subsection{Karnaugh Maps}
+
+To help us find simpler boolean expressions, we can change how we represent our truth table data:
+
+\begin{Def}[Karnaugh Maps]
+
+    A Karnaugh map (K-map) represents truth table data with a format called 
+    \textbf{Gray Code}. In Gray Code, columns and rows differ by only one bit of information:\\
+
+    \noindent
+    \includegraphics[width=\textwidth]{Sections/circuits/comb/kmap.png}
+
+    \noindent
+    1) Shows the truth table for inputs $A$, $B$, and $C$ with output $F$. 2) Shows the corresponding K-map. \textbf{Note:}
+    with this implementation, the columns and rows are cyclical, meaning the leftmost and rightmost columns are adjacent, as are the top and bottom rows.
+    Hence with 3), we can represent a 3 input truth table as a 3D cube. The red arrows in both 2) and 3) indicate adjacency. We can extend this to 4 inputs:\\
+
+    \noindent
+    \includegraphics[width=\textwidth]{Sections/circuits/comb/kmap2.png}
+\end{Def}
