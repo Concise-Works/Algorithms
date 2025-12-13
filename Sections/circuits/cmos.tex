@@ -714,9 +714,67 @@ is just for clarity; In reality, $t_{CD}$ is a subset of $t_{PD}$, both starting
   The shortest path from input to output is the ordered set ${2, 4}$, hence the overall contamination delay is $t_{CD} = 1ns + 1ns = 2ns$.}
   \label{fig:tpdc-3}
 \end{figure}
-
+\clearpage 
 
 \newpage
+\subsection{Glitches, Hazards \& Lenient Combinational Devices}
+\noindent
+These contamination periods introduce a new problem:
+
+\begin{Def}[Glitches \& Hazards]
+
+  \label{def:glitches_hazards}
+
+  \noindent
+  A \textbf{glitch} is a brief, unwanted change in a signal's state, often caused by differences in propagation delays within a circuit.
+  A \textbf{hazard} is a condition that can lead to glitches, typically occurring when multiple signal paths with different delays converge at a single point.
+  Hazards can be classified into:
+  \begin{itemize}
+    \item \textbf{Static Hazard:} Occurs when the output is supposed to remain constant (0 or 1) but temporarily changes due to differing path delays.
+    \item \textbf{Dynamic Hazard:} Occurs when the output is expected to change from one state to another (0 to 1 or vice versa) but oscillates multiple times before settling. \cite{csci93-hazards}
+  \end{itemize}
+
+
+\end{Def}
+
+\noindent 
+We can fix this with the following strategy:
+\begin{Def}[Lenient Combinational Devices]
+
+  \label{def:lenient_combinational_devices}
+
+  \noindent
+  A \textbf{lenient combinational device} is a circuit designed to safeguard against glitches and hazards.
+  This is often achieved through redundancy or specific design techniques.
+
+\end{Def}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/hazard.png}
+  \caption{An example of a static hazard. Here, the output is supposed to remain low (0) when inputs $(A,B)$ transition from (1,1) to (1,0).
+ However, the time after $t_{CD}$ before the end of $t_{PD}$, the output is undefined, potentially fluctuating between high (1) and low (0).}
+  \label{fig:hazard}
+\end{figure}
+
+\noindent
+Next we'll show an example of a lenient combinational device that avoids hazards.
+
+\newpage 
+
+\noindent
+To fix this we introduce redundancy:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/lenient.png}
+  \caption{The following is a lenient NOR gate. 1) Shows the standard truth table for NOR. 2) Shows the lenient NOR truth table, where $X$ represents a don't-care condition.
+  I.e., when $B$ is 1, no matter what $A$ is, the output is 0. Vice-versa when $A$ is 1. 3) Shows the the circuit when both $A$ and $B$ are 1. We see 
+  when transitioning to 4) where $B$ flips to 0, $A$'s complement retains its ground connection on the output; Hence the don't-care condition on $B$.}
+  \label{fig:lenient}
+\end{figure}
+
+\newpage 
 % \noindent
 % (Taking a break from writing. I intended to write all the way to show 
 % how with the PUN and PDN configurations achieve binary addition, subtraction, multiplication, and division.

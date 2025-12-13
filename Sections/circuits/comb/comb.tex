@@ -133,10 +133,70 @@ To help us find simpler boolean expressions, we can change how we represent our 
     \includegraphics[width=\textwidth]{Sections/circuits/comb/kmap.png}
 
     \noindent
-    1) Shows the truth table for inputs $A$, $B$, and $C$ with output $F$. 2) Shows the corresponding K-map. \textbf{Note:}
-    with this implementation, the columns and rows are cyclical, meaning the leftmost and rightmost columns are adjacent, as are the top and bottom rows.
-    Hence with 3), we can represent a 3 input truth table as a 3D cube. The red arrows in both 2) and 3) indicate adjacency. We can extend this to 4 inputs:\\
+    1) Shows the truth table for inputs $A$, $B$, and $C$ with output $F$. 2) The corresponding K-map
+    (left-most column, $C$, top row, $AB$ respectively). \textbf{Note:} in 2) columns and rows are cyclical, meaning the leftmost and rightmost columns are adjacent, as are the top and bottom rows.
+    Hence with 3), we can represent our truth table as a 3D cube (Formatted $ABC$). The red arrow in both 2) and 3) indicate adjacency. We extend this to 4 inputs:\\
 
     \noindent
     \includegraphics[width=\textwidth]{Sections/circuits/comb/kmap2.png}
+
+    \noindent
+    For inputs 5 and 6, we need an additional dimension, building a $4 \times 4 \times 4$ k-map. Anything beyond 6 inputs
+    becomes difficult to visualize, so algorithms become more integral in the simplification process.
 \end{Def}
+
+\newpage 
+
+\noindent 
+Now to actually use this k-map to simplify we introduce the following method:
+\begin{Def}[Simplifying with Implicants \& Prime Implicants]
+
+    An \textbf{implicant} is a set of adjacent 1s in a k-map, whose width and length are a power of 2 (i.e., 1, 2, 4, 8, $\dots$).
+    An implicant that is not a proper subset of another implicant (i.e., not contained within another implicant) is called a \textbf{prime implicant}.
+
+    \noindent
+    \rule{\textwidth}{0.4pt}\\
+
+    \noindent
+    \textbf{Name of the game:} Find the smallest set of prime implicants that cover all 1s in the k-map. Then translate
+    each member of such set into a product term (e.g., top row $AB:=01\to \overline{A}B$). Then sum all 
+    found product terms to yield the simplified boolean expression:\\
+
+    \noindent
+    \includegraphics[width=\textwidth]{Sections/circuits/comb/imp.png}
+
+    \noindent
+    1) The red singleton implicant translates to $\overline{A}\overline{B}C$. The blue pair translates to $A\overline{C}$, yielding the simplified expression
+    $F=\overline{A}\overline{B}C + A\overline{C}$. \textbf{Note:} In the second term we dropped $B$, as despite its value switching, it
+    did not affect the output.\\
+    
+    \noindent
+    2) Red group: $\overline{A}C$, blue group: $\overline{B}$, yielding $F=\overline{A}C + \overline{B}$, which demonstrates that
+    finding \underline{\textbf{larger groups} lead to smaller terms}, and thus, a simpler expression.
+\end{Def}
+
+\noindent 
+
+\begin{theo}[Prime Implicants \& Uniqueness]
+
+    Though we look for the smallest set of prime implicants, there may be multiple such sets (i.e., same size, different members) that cover all 1s in the k-map.
+\end{theo}
+
+\begin{Tip} Think of our 1 sets as capturing the truth table in its truth states (i.e,. when $A$ is this, and $B$ is this, the 
+  output is true!). We combine all such states to reflect the overall behavior (i.e., if this state or this state is true, the output is true!).
+
+  Recall from discrete math, this is called the disjunctive normal form (DNF) of a boolean function. We can do the same with 0s, called the
+  conjunctive normal form (CNF) of a boolean function, where we specify which states we don't want; Though we won't explore CNF here.
+\end{Tip}
+
+\newpage 
+
+\noindent
+Let us explore an example with 4 inputs:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/imp2.png}
+  \caption{1) and 2) A 4-input k-map with 4 prime implicants highlighted. 1) Yields $F=\overline{B}C+D+B\overline{C}+\overline{C}A$. 2) Yields $F=\overline{B}C+D+B\overline{C}+A\overline{B}$.}
+  \label{fig:imp-example}
+\end{figure}
