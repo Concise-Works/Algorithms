@@ -200,3 +200,10 @@ Let us explore an example with 4 inputs:
   \caption{1) and 2) A 4-input k-map with 4 prime implicants highlighted. 1) Yields $F=\overline{B}C+D+B\overline{C}+\overline{C}A$. 2) Yields $F=\overline{B}C+D+B\overline{C}+A\overline{B}$.}
   \label{fig:imp-example}
 \end{figure}
+
+\begin{theo}[Glitches from Ipmlicant Hopping]
+
+  Jumping between two prime implicants which do not overlap causes glitches.
+  This is because each implicant, i.e., product term, is responsible for driving the output.
+  So when we hop these regions, the output briefly has undefined behavior, due to the $t_{PD}$ (uncertainty period).
+\end{theo}
