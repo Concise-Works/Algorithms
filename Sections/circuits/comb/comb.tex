@@ -95,15 +95,15 @@ To further illustrate that NAND and NOR are functionally complete, observe the b
     \label{theo:nand-increase}
 
     Start with the desired function, e.g., $\overline{A \cdot B \cdot C}$, for clarity $\texttt{NAND}(A,B,C)$.
-    We attempt to group inputs into pairs of 2, using identities from Figure (\ref{fig:nand-nor-complete}): $\texttt{NAND}(A,B,C) = \texttt{NOT}(\texttt{AND}(A,B,C))$.
-    Now we group:
-    $\texttt{NOT}(\texttt{AND}(A,B,C)) = \texttt{NOT}(\texttt{AND}(\texttt{AND}(A,B),C))$, and we are done:\\
+    We attempt to group inputs into pairs of 2: $\texttt{NAND}(A,B,C) = \texttt{NOT}(\texttt{AND}(A,B,C))$.
+    Now we group:\\
+    $\texttt{NOT}(\texttt{AND}(A,B,C)) = \texttt{NOT}(\texttt{AND}(\texttt{AND}(A,B),C))$, each AND has 2 inputs:\\
 
     \noindent
     \includegraphics[width=1\textwidth]{Sections/circuits/comb/increase_gate2.png}\\
     \noindent
-    To only use NAND gates, we can start simplifying by bringing the NOT and AND back together:
-    $\texttt{NAND}(\texttt{AND}(A,B),C)$. Though we still have an AND gate, we can replace it with NANDs using Figure \ref{fig:nand-nor-complete}:\\
+    To only use NAND gates, we bring the NOT and AND back together:
+    $\texttt{NAND}(\texttt{AND}(A,B),C)$. To replace $A$ and $B$'s AND gate, we substitute with NANDs using Figure (\ref{fig:nand-nor-complete}):\\
     
     \noindent
     \includegraphics[width=1\textwidth]{Sections/circuits/comb/increase_gate3.png}
@@ -113,7 +113,7 @@ To further illustrate that NAND and NOR are functionally complete, observe the b
 
 \begin{Note}
 \textbf{Note:} As we've mentioned before,
-chaining vs. tree methods vary differently on $t_{PD}$. Additionally notice that the size of our circuit can fluctuate based
+chaining vs. tree methods vary differently on $t_{PD}$. Additionally notice that the size of our circuit can differ based
 on how we decide to break down our boolean expression. In the above Theorem (\ref{theo:nand-increase}), if we assume
 AND gates are slower than NAND gates in this system, the simplified NAND version is faster, and smaller, assuming AND gates are composed of multiple NANDs.
 \end{Note}
@@ -201,9 +201,49 @@ Let us explore an example with 4 inputs:
   \label{fig:imp-example}
 \end{figure}
 
-\begin{theo}[Glitches from Ipmlicant Hopping]
+\begin{theo}[Glitches from Implicant Hopping]
 
-  Jumping between two prime implicants which do not overlap causes glitches.
-  This is because each implicant, i.e., product term, is responsible for driving the output.
-  So when we hop these regions, the output briefly has undefined behavior, due to the $t_{PD}$ (uncertainty period).
+  Moving between two prime implicants (product terms) which do not overlap causes glitches;
+  Because each is solely driving the output.
+  So switching one off one and the other on, briefly exhibits undefined behavior, due to the $t_{PD}$ (uncertainty period).
 \end{theo}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/glitch.png}
+  \caption{To the left shows the k-map of a function consisting of two prime implicants (circled red).
+  The right shows the logic gate implementation and its resulting sum of products expression. }
+  \label{fig:glitch-example}
+\end{figure}
+
+\noindent
+We deviate from our game of smallest sets, adding redundancy:
+\begin{theo}[Resolving Implicant Glitches with Redundancy]
+
+    To resolve glitches caused by gaps between prime implicants, we can add another 
+    prime implicant that fills that gap to help hold the output steady during transitions.
+\end{theo}
+
+\clearpage
+
+\noindent
+To further illustrate the glitch we visualize the voltage over time:\\
+
+\vspace{1em}
+
+\begin{figure}[ht!]
+  
+  \hspace{-7em} \includegraphics[width=1.3\textwidth]{Sections/circuits/comb/glitch2.png}
+  \caption{$A$ and $B$ inputs remain steady high (1), while $C$ transitions from high (1) to low (0).
+  Based on Figure \ref{fig:glitch-example}, the output $Y$ should remain high (1); However,
+  due to both products relying on $C$, the output is briefly undefined for $t_{PD}$.}
+  \label{fig:glitch-voltage}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/glitch3.png}
+  \caption{By adding the redundant prime implicant (in red), we ensure steady output during transitions. In particular,
+  the output isn't solely reliant on $C$ during its transition, thus avoiding the glitch.}
+  \label{fig:glitch-resolved}
+\end{figure}
