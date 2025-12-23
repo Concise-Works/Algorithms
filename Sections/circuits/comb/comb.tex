@@ -126,6 +126,8 @@ To help us find simpler boolean expressions, we can change how we represent our 
 
 \begin{Def}[Karnaugh Maps]
 
+  \label{def:karnaugh-map}
+
     A Karnaugh map (K-map) represents truth table data with a format called 
     \textbf{Gray Code}. In Gray Code, columns and rows differ by only one bit of information:\\
 
@@ -247,3 +249,68 @@ To further illustrate the glitch we visualize the voltage over time:\\
   the output isn't solely reliant on $C$ during its transition, thus avoiding the glitch.}
   \label{fig:glitch-resolved}
 \end{figure}
+
+\clearpage
+
+\noindent
+\subsection{Multiplexers \& Read-only Memory}
+
+Below observe the table we've used in our k-map Definition (\ref{def:karnaugh-map}):
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/mux.png}
+  \caption{1) A three input truth table for when $S$ is 0 $D_0$ is the output, and when 
+  $S$ is 1, $D_1$ is the output. 2) A diagram simplification of the truth table: $S$ has two controls 1 and 0, which chooses between data inputs $D_1$ and $D_0$ respectively.}
+  \label{fig:mux}
+\end{figure}
+
+\noindent
+This new combination device we've created has a name:
+\begin{Def}[Multiplexer]
+
+  \label{def:mux}
+
+    A \textbf{multiplexer} (MUX) is a combinational logic device that selects one of many data inputs
+    based on control inputs, outputting the selected data input. In Figure (\ref{fig:mux}), 
+    $S$ the control input and $D_0$, $D_1$ the data inputs.
+
+    More generally, a MUX with \underline{$n$ control inputs can select from $2^n$} data inputs. Vice-versa
+    a MUX with \underline{$m$ data inputs, has $\log_2(m)$} control inputs.\\
+
+    \noindent
+    \includegraphics[width=.93\textwidth]{Sections/circuits/comb/mux2.png}
+
+    \noindent
+    E.g., a 4-to-1 MUX: 2 control inputs $S_1$ and $S_0$ selecting from 4 data inputs.
+\end{Def}
+\newpage
+
+\noindent
+In the above Definition (\ref{def:mux}), we simply showed a 4-1 MUX; However, they are much more
+complicated devices:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/mux3.png}
+  \caption{This shows that under the hood is composed of a tree of 2-to-1 MUXes.}
+  \label{fig:mux-complex}
+\end{figure}
+
+\begin{theo}[Building Larger MUXes from 2-to-1 MUXes]
+
+    Any larger MUX can be built from a tree of 2-to-1 MUXes. In particular, an $n$-to-1 MUX
+    requires $n-1$ of 2-to-1 MUXes to build. \hfill \cite{quora_mux_12_to_1}
+\end{theo}
+\begin{theo}[MUX as Boolean Function Implementers]
+
+    MUXes are functionally complete, i.e., can implement any boolean function.\\
+
+    \noindent
+    \includegraphics[width=1\textwidth]{Sections/circuits/comb/mux4.png}
+
+    \noindent
+    E.g., 1) shows a NOT, 2) an AND, and 3) an OR gate implemented with a 2-to-1 MUX.
+\end{theo}
+
+\newpage
