@@ -314,3 +314,74 @@ complicated devices:
 \end{theo}
 
 \newpage
+
+\noindent 
+To be clear, Logic gates and MUXes may both be used to implement boolean functions,
+it's a matter of which use-case is more appropriate:
+
+\begin{theo}[MUX vs. Logic Gates]
+
+    Logic gates help with basic/dedicated functions, such as needing a AND, OR, NOT 
+    gate, or a simple routine (algorithm). MUXes help with selecting between multiple data inputs, i.e., 
+    large if-else/branching logical statements.
+
+    Depending on the function implementation's $t_{PD}$ and size requirements, one may be more appropriate than the other
+    based on the schematics at hand.
+\end{theo}
+
+\begin{Note} \textbf{Note:} In real world applications, MUXes carry 
+  significant overhead compared to logic gates. They are complex devices for simple selection use 
+  cases, meaning they are not as flexible as logic gates. This is an important consideration when it comes to the design costs/efficiency of a circuit.
+\end{Note}
+
+\noindent
+We discussed a device (MUX) that selects the row of a truth table where a specific piece of data lives. This is good
+for one output; But to allow for $n$ outputs, we'll add another set of $n$ lines (columns) to each row. Each column 
+leads to an output:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/dec.png}
+  \caption{1) Shows an altered 4-to-1 MUX from Definition (\ref{def:mux}) with the addition of 2 columns (outputs) $A$ and $B$ per row.
+  2) Shows $S_0=0$ and $S_1=1$, thus selecting row 2, outputting $A=1$ and $B=1$.}
+  \label{fig:dec}
+\end{figure}
+
+\noindent 
+This new device also has a name:
+
+\begin{Def}[Decoder]
+
+  \label{def:dec}
+
+    A \textbf{decoder} is a combinational logic device that takes $n$ control inputs and decodes them
+    to $2^n$ possible unique outputs (explained on the next page). E.g., Figure (\ref{fig:dec}) shows a 2-to-4 decoder, 2 inputs leading to 4 outputs.
+    
+    This differs from the MUX naming convention where $n$ select inputs lead to 1 output ($2^n$-to-1 MUX) vs. ($n$-to-$2^n$ Decoder).
+\end{Def}
+
+\noindent
+In Figure (\ref{fig:dec}), we see that we'll always get 1 from each input,
+which isn't very interesting; 
+
+\begin{theo}[Decoder PDN-line Manipulation]
+
+  To achieve $2^n$ output on a decoder, PDNs are attached to output-lines driving high (1) lines to low (0).
+  Each row mix-and-matches PDNs to each intersection just how a truth table would with 0s and 1s for 
+  unique combinations.\\
+  \textbf{Note:} PDNs only effect their intersection, not the entire column.
+\end{theo}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/dec2.png}
+  \caption{1) Shows the 2-to-4 decoder from Figure (\ref{fig:dec}) now with PDNs: $[0;0]$ has 0 PDNs,
+  $[0;1]$ and $[1;0]$ have 1 PDN each, and $[1;1]$ has 2 PDNs. 2) Shows $S_0=0$ and $S_1=1$, thus selecting row 2, outputting $A=1$ and $B=0$ because of it's PDN.
+  \textbf{Notice:} That $A$'s line isn't effected by the other PDNs below, thus it's output remains high.}
+  \label{fig:dec-pdn}
+\end{figure}
+
+\noindent
+
+
+\newpage
