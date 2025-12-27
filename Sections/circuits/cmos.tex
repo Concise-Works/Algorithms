@@ -457,9 +457,9 @@ This section will cover how we take MOSFETs and use them to build logic gates.
 
   \label{def:functional_completeness}
 
- it can be used to express all possible Boolean functions.
+ A function is \textbf{functionally complete} if it can expresses all possible Boolean functions.
     For example, the set of operators $\{\text{AND, OR, NOT}\}$ is functionally complete.
-    However, we can do better. The NAND gate (and NOR gate) by itself is functionally complete.
+    The NAND (NOT AND) or NOR (NOT OR) operators by themselves are functionally complete.
 \end{Def}
 
 \begin{Example}[Functionally Complete Sets of Operators]
@@ -578,9 +578,204 @@ Let's brainstorm possibilities for an AND and NAND, and elaborate on Defintition
   \label{fig:nand-2}
 \end{figure}
 
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/nand_3.png}
+  \caption{Both inputs are (1,0), PUN half-closed reaching the output, PDN half-closed, but doesn't affect the output; Hence the output is high (1).}
+  \label{fig:nand-3}
+\end{figure}
+
+\vfill
+
+\clearpage
+\newpage
+
+
+\noindent
+To continue with the last case:\\
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/nand_4.png}
+  \caption{Both inputs are (1,1), PUN open, PDN closed reaching the output; Hence the output is low (0).}
+  \label{fig:nand-4}
+\end{figure}
+
+\begin{theo}[Modeling Functions via PUNs]
+
+  \label{theo:modeling_functions_pun}
+
+  \noindent
+  FETs in Series yields an AND, and in parallel yields an OR. Below we 
+  have the function\\
+  $F=\overline{A} + \overline{B} \cdot \overline{C}$: (1) shows the PUN network, and then we 
+  design a complementary PDN network in (2) to balance the circuit:
+
+  \begin{center}
+    \includegraphics[width=\textwidth]{Sections/circuits/pun_pdn_nand.png}
+  \end{center}
+\end{theo}
+
+\begin{Note}
+\textbf{Note:} Since PUNs are by default high, they naturally invert logic, requiring 
+  us to invert again or adjust logic for other functions which do not require inversion.
+\end{Note}
+
+\newpage 
+
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/pun_pdn_nand_full.png}
+  \caption{The complete CMOS logic gate for $F=\overline{A} + \overline{B} \cdot \overline{C}$.
+  Here, the PUN is shown on top, and the PDN on the bottom.}
+  \label{fig:pun-pdn-nand-2}
+\end{figure}
+
+\vspace{1em}
+\subsection{CMOS Timing Specifications:}
+
+\noindent
+We touched briefly on timing specifications in Def (\ref{def:combinational_device}). We fullen
+the picture with the following definition:
+\begin{Def}[Contamination Delay ($t_{CD}$) \& Propagation Delay ($t_{PD}$)]
+
+  \label{def:contamination_delay}
+
+  \noindent
+  In CMOS circuits, there are two main timing specifications to consider:
+  \begin{itemize}
+    \item \textbf{Propagation Delay} ($t_{PD}$): The maximum time for an input to stabilize at the output.
+    \item \textbf{Contamination Delay} ($t_{CD}$): The minimum time delay an input remains unreflected at the output. I.e.,
+    how long the old value lingers before change is detected at the output.
+  \end{itemize}
+
+  \noindent
+  Manufacturers often call Contamination delay the \textbf{Minimum Propagation Delay}. These specifications help 
+  manufacturers to verify signal coherence when designing circuits.
+\end{Def}
+
+\noindent
+Let's take a look at an example on the next page.
+
 \newpage 
 
 \noindent
-(Taking a break from writing. I intended to write all the way to show 
-how with the PUN and PDN configurations achieve binary addition, subtraction, multiplication, and division.
-But I think this is enough for now. I will come back to it later.)
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/tpdc_1.png}
+  \caption{Observe the following inverter circuit receiving a high voltage (1) at the top-left of the diagram.
+  Below strips away the symbol, showing the CMOS implementation; Here, the PUN is open, while the PDN is closed, relaying a low voltage (0) to the output.
+Now observe the waveforms on the right; Here, the y-axis 
+  represents voltage-level, and the x-axis represents time. Assuming we began with no voltage applied (0) at the input, when we apply
+  a high voltage (1), it takes short time for $V_{IN}$ to reach a readable high voltage (1).
+  At the same time, the output $V_{OUT}$ begins to drop from high (1) to low (0). Vice-versa when we take away power again from the input, shown as the 0 mark.}
+  \label{fig:tpdc-1}
+\end{figure}
+
+\noindent
+Now to calculate an overall $t_{PD}$ and $t_{CD}$ for a circuit:
+\begin{Def}[Total Propagation \& Contamination Delay]
+
+  \label{def:overall_tpdc}
+
+  \noindent
+  For a circuit with multiple logic gates, the overall timing specifications are calculated as follows:
+  \begin{itemize}
+    \item \textbf{Overall Propagation Delay} ($t_{PD}$): The sum of the individual propagation delays of each gate along the longest path from input to output.
+    \item \textbf{Overall Contamination Delay} ($t_{CD}$): The sum of the individual contamination delays of each gate along the shortest path from input to output.
+  \end{itemize}
+
+  \noindent
+  \textbf{To clarify:} Longest/shortest path refers to time spent, not the number of gates.
+\end{Def}
+
+\begin{Note}
+\textbf{Note:} In the next Diagram (\ref{fig:tpdc-2}) $t_{PD}$ and $t_{CD}$ are illustrated apart from each other. However, this 
+is just for clarity; In reality, $t_{CD}$ is a subset of $t_{PD}$, both starting at the same time. I.e., $t_{CD} \leq t_{PD}$.
+\end{Note}
+
+\begin{figure}[ht!]
+  
+  \hspace{-13em} \includegraphics[width=1.5\textwidth]{Sections/circuits/tpdc_2.png}
+  \caption{Zooming into the transition period, we can observe the timing specifications.
+  The \textbf{Propagation Delay} ($t_{PD}$) is measured from when $V_{IN}$ reaches a readable high voltage (1) to when $V_{OUT}$ reaches a readable low voltage (0).
+  The \textbf{Contamination Delay} ($t_{CD}$) is measured from when $V_{IN}$ begins to rise from low (0) to when $V_{OUT}$ begins to drop from high (1).
+  Here we include both $V_{IH}$, $V_{IL}$, $V_{OH}$, and $V_{OL}$ as described in Definition (\ref{def:noise_margins}).}
+  \label{fig:tpdc-2}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/tpdc_3.png}
+  \caption{This circuit only consists of NAND gates, all of which have $t_{PD} = 4ns$ and $t_{CD} = 1ns$.
+  The longest path from input to output is the ordered set ${1, 3, 4}$, hence the overall propagation delay is $t_{PD} = 4ns + 4ns + 4ns = 12ns$.
+  The shortest path from input to output is the ordered set ${2, 4}$, hence the overall contamination delay is $t_{CD} = 1ns + 1ns = 2ns$.}
+  \label{fig:tpdc-3}
+\end{figure}
+\clearpage 
+
+\newpage
+\subsection{Glitches, Hazards \& Lenient Combinational Devices}
+\noindent
+These contamination periods introduce a new problem:
+
+\begin{Def}[Glitches \& Hazards]
+
+  \label{def:glitches_hazards}
+
+  \noindent
+  A \textbf{glitch} is a brief, unwanted change in a signal's state, often caused by differences in propagation delays within a circuit.
+  A \textbf{hazard} is a condition that can lead to glitches, typically occurring when multiple signal paths with different delays converge at a single point.
+  Hazards can be classified into:
+  \begin{itemize}
+    \item \textbf{Static Hazard:} Occurs when the output is supposed to remain constant (0 or 1) but temporarily changes due to differing path delays.
+    \item \textbf{Dynamic Hazard:} Occurs when the output is expected to change from one state to another (0 to 1 or vice versa) but oscillates multiple times before settling. \cite{csci93-hazards}
+  \end{itemize}
+
+
+\end{Def}
+
+\noindent 
+We can fix this with the following strategy:
+\begin{Def}[Lenient Combinational Devices]
+
+  \label{def:lenient_combinational_devices}
+
+  \noindent
+  A \textbf{lenient combinational device} is a circuit designed to safeguard against glitches and hazards.
+  This is often achieved through redundancy or specific design techniques.
+
+\end{Def}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/hazard.png}
+  \caption{An example of a static hazard. Here, the output is supposed to remain low (0) when inputs $(A,B)$ transition from (1,1) to (1,0).
+ However, the time after $t_{CD}$ before the end of $t_{PD}$, the output is undefined, potentially fluctuating between high (1) and low (0).}
+  \label{fig:hazard}
+\end{figure}
+
+\noindent
+Next we'll show an example of a lenient combinational device that avoids hazards.
+
+\newpage 
+
+\noindent
+To show leniency, consider the following lenient NOR gate:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{Sections/circuits/lenient.png}
+  \caption{The following is a lenient NOR gate. 1) Shows the standard truth table for NOR. 2) Shows the lenient NOR truth table, where $X$ represents a don't-care condition.
+  I.e., when $B$ is 1, no matter what $A$ is, the output is 0. Vice-versa when $A$ is 1. 3) Shows the the circuit when both $A$ and $B$ are 1. We see 
+  when transitioning to 4) where $B$ flips to 0, $A$'s complement retains its ground connection on the output; Hence the don't-care condition on $B$.}
+  \label{fig:lenient}
+\end{figure}
+
+\newpage 
+% \noindent
+% (Taking a break from writing. I intended to write all the way to show 
+% how with the PUN and PDN configurations achieve binary addition, subtraction, multiplication, and division.
+% But I think this is enough for now. I will come back to it later.)
