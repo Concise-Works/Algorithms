@@ -382,6 +382,56 @@ which isn't very interesting;
 \end{figure}
 
 \noindent
+\subsection{32-bit Full Adder (Addition)}
+We now know enough to create a combinational logic circuit that performs addition. Recall the information provided in
+Theorem (\ref{theo:adding_binary}) about binary addition. We now build intuition:
 
+\begin{theo}[32-bit Full Adder Strategy (Logic Gates)]
+
+    We approach the problem truth-table first. To add two binary numbers $A$ and $B$, we need at least 2 inputs;
+    However, we need to account for carry-in bits $C_{in}$ from previous additions\\
+    (3 inputs). We also need to pick between sum bit $S$ and carry-out bit $C_{out}$ (2 outputs). 
+    
+    Logically, we only have a carry if at least 2 of the 3 inputs are 1;
+    Hence,\\ 
+    $C_{out} = (A\land B) \lor (A\land C_{in}) \lor (B\land C_{in})$. For the sum bit, at most 1 input can be 1; Hence,
+    $S = A \oplus B \oplus C_{in}$ (XOR). 
+    
+    This only adds 1 bit; To extend to 32-bits, we chain 32 of these full adders (FA) together:
+    Break $A$ and $B$ into 32 individual bits, $A_{0}$ to $A_{31}$ and $B_{0}$ to $B_{31}$. The carry-out of each FA becomes the carry-in of the next FA.
+    We may use the last carry-out $C_{out}$ as an overflow bit.
+\end{theo}
 
 \newpage
+\noindent
+Let's implement the above strategy:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=.9\textwidth]{Sections/circuits/comb/fa.png}
+  \caption{Full Adder (FA) truth table, $A$, $B$, and $C_{in}$, with outputs $C_{out}$ and $S$.}
+  \label{fig:fa}
+\end{figure}
+
+\vspace{-1em}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/fa2.png}
+  \caption{1) $S$ logic gates, 2) $C_{out}$ logic gates, 3) combining $S$ and $C_{out}$ logic gates to form a full adder. 4) diagram 
+  representation of FA, 5) chaining 32 FAs to create a 32-bit adder.}
+  \label{fig:fa-chain}
+\end{figure}
+
+\newpage
+\noindent
+Again, remember, we can always make a MUX/Decoder version of whatever logic gate version we create:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/fa3.png}
+  \caption{1) Shows our desired logic (truth-table) 2) Shows a 3-to-8 Decoder, with select lines 
+  $A$, $B$, and $C_{in}$, driving 8 outputs, leading to outputs $S$ and $C_{out}$ via OR gates. \textbf{Note:} The inverters just before the outputs; This
+flips our PDNs low outputs to high for our desired logic.}
+  \label{fig:fa-mux-chain}
+\end{figure}
+
+\newpage 
