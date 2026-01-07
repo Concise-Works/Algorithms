@@ -497,8 +497,10 @@ Combining all our techniques so far, we can create a simple ALU:
   leading to 2 control lines (Control$_0$ and Control$_1$). Control$_0$ ($C_0$), if $C_0=0$ then (AND and ADD) are selected, else (OR and SUB) are selected
   Control$_1$ ($C_1$), if $C_1=0$ then the boolean operations (AND or OR) is the Result; Otherwise (ADD or SUB) is the Result. The ADD and SUB operations share the same 32-bit adder/subtractor circuit from Figure (\ref{fig:fa-subtract})
   E.g., OPCODE = 10, $C_0=1$ and $C_1=0$, performs subtraction. We have additional outputs, \textbf{`Zero'}, which determines if the output is zero; 1 (true) and 0 (false).
-  Then \textbf{`Sign'}, which relies on two's complement formatting to acquire the integer sign $n_0$ the left-most bit. And then of course
+  Then \textbf{`Sign'}, which relies on two's complement formatting to acquire the integer sign $n_0$ the left-most bit. Finally
   our `Carry' and `Overflow' from our modified FA. \cite{villanova_alu}
   }
   \label{fig:alu}
 \end{figure}
+
+\newpage

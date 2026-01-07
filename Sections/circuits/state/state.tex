@@ -1,1 +1,60 @@
-\subsection{Digital State \& Sequential Logic}
+\subsection{Sequential Logic: Building Memory (RAM/DRAM)}
+
+\noindent
+If we want to have a circuit that can \textbf{store} information, say ``Do $x$ if the previous input was $y$''
+(E.g., traffic lights). 
+
+To start building intuition lets start by seeing what happens when we connect
+gate outputs to other gate inputs in a loop, creating a \textbf{feedback loop} \cite{core_dumped_transistors}:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/or_loop.png}
+  \caption{A simple feedback loop using OR gates. 1) Initially both inputs are zero, then the free input
+  is set to 1. 2) The output becomes 1, switching the feedback input to 1. 3) 
+  Now even if the free input is set back to 0, the output remains 1, since one of the OR inputs is still 1.}
+  \label{fig:or_loop}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/and_loop.png}
+  \caption{A simple feedback loop using AND gates. 1) Initially both inputs are one, then the free input
+  is set to 0. 2) The output becomes 0, switching the feedback input to 0. 3) 
+  Now even if the free input is set back to 1, the output remains 0, since one of the AND inputs is still 0.}
+  \label{fig:and_loop}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/combine_loop.png}
+  \caption{Combining the OR and AND feedback loops from Figures (\ref{fig:or_loop}) and (\ref{fig:and_loop}),
+  we get the above. 1) Initially both inputs are 0, output 0, then inputs both are set to 1, resulting in a a 1 output. 2) The output is now 1, and the first 
+  input is set to 0, but the output remains 1, as the second input is still 1, driving the AND gate.}
+  \label{fig:combine_loop}
+\end{figure}
+
+\newpage 
+\noindent
+In the above Figure (\ref{fig:combine_loop}), we can see that turning on the second input, effectively resets 
+the output to 0. Lets see what happens when we keep the second input on with an inverter:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/and_loop2.png}
+  \caption{1) Initially all inputs are 0, output 0. 2) First input is set to 1,
+  output becomes 1. 3) First input is set back to 0, but output remains 1. 
+  4) Second input is set to 1, output becomes 0. 5) We characterize the first 
+  input as the `SET' and the second input as the `RESET'.}
+  \label{fig:sr_latch}
+\end{figure}
+
+\noindent
+This circuit is called an:
+\begin{Def}[AND-OR Latch]
+    
+    An \textbf{AND-OR Latch} is a basic memory element that can store one bit of information. 
+    It has two inputs, labeled `S' (Set) and `R' (Reset), and a single output `Q'.
+
+    However, this design has a critical flaw: if both `S' and `R' are set to 1 simultaneously creates an 
+    \textbf{invalid state}, and the output hangs on 0, ignoring the 1 that's being ``set''.
+\end{Def}
