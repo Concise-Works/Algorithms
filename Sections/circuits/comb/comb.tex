@@ -253,7 +253,7 @@ To further illustrate the glitch we visualize the voltage over time:\\
 \clearpage
 
 \noindent
-\subsection{Multiplexers \& Read-only Memory}
+\subsection{Branching Logic: Multiplexers \& Decoders}
 
 Below observe the table we've used in our k-map Definition (\ref{def:karnaugh-map}):
 
@@ -382,7 +382,7 @@ which isn't very interesting;
 \end{figure}
 
 \noindent
-\subsection{32-bit Full Adder (Addition)}
+\subsection{Creating the ALU: Addition \& Subtraction Circuits}
 We now know enough to create a combinational logic circuit that performs addition. Recall the information provided in
 Theorem (\ref{theo:adding_binary}) about binary addition. We now build intuition:
 
@@ -417,7 +417,7 @@ Let's implement the above strategy:
   \centering
   \includegraphics[width=1\textwidth]{Sections/circuits/comb/fa2.png}
   \caption{1) $S$ logic gates, 2) $C_{out}$ logic gates, 3) combining $S$ and $C_{out}$ logic gates to form a full adder. 4) diagram 
-  representation of FA, 5) chaining 32 FAs to create a 32-bit adder.}
+  representation of FA, 5) chaining 32 FAs to create a 32-bit adder. \cite{edgington2017adder} }
   \label{fig:fa-chain}
 \end{figure}
 
@@ -434,4 +434,71 @@ flips our PDNs low outputs to high for our desired logic.}
   \label{fig:fa-mux-chain}
 \end{figure}
 
+\vspace{2em}
+
+\noindent
+We can reuse the same technique for subtraction with a small twist:
+\begin{theo}[32-bit Subtraction Strategy via 2's Complement]
+
+    Recall, $3-2=3+(-2)$; Thus, altering our 32-bit adder and negating, say $B$, allows 
+    us to perform subtraction. We negate using Definition (\ref{def:signed_binary_numbers_twos_complement}), two's complement:
+    Invert every bit in the number, then add 1. I.e., 
+    $$ A-B = A + (-B) = A + (\overline{B} + 1)$$ 
+    
+    \noindent
+    To get the $+1$, we set the initial carry-in $C_{in}$ to 1.\\
+
+    \noindent
+    Instead of building a separate subtraction circuit, we use our initial $C_{in}$ as a 
+    control line choosing between addition (0) and subtraction (1); Connect the control line
+    to all outgoing $B$ lines replacing the ORs with XOR gates to invert $B$ when subtracting.
+\end{theo}
+
 \newpage 
+
+\noindent
+The following is our addition/subtraction circuit:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/sub.png}
+  \caption{ Here shows a similar FA string from Figure (\ref{fig:fa-chain}), with the addition of XOR gates
+  after each $B$ input supplemented by the initial $C_{in}$ line (control line). \cite{villanova_alu}}
+  \label{fig:fa-subtract}
+\end{figure}
+
+\begin{theo}[$n$-bit AND and OR Operations]
+
+  \label{theo:n-bit-and-or}
+
+    To create $n$-bit AND and OR operations, we chain $n$ individual AND and OR gates respectively
+    to each bit from $A$ and $B$. E.g., for AND, gate 0 takes in $A_0$ and $B_0$ and so on.
+\end{theo}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/and_or_bit.png}
+  \caption{ (1) and (3) both demonstrate the AND and OR chain discussed in 
+  Theorem (\ref{theo:n-bit-and-or}) respectively. 2) shows an abstraction or \textbf{`interface'}
+  of the AND circuit; The slash (``/") followed by the $32$ indicates that the line is actually 32 individual lines (bits). \cite{villanova_alu} }
+  \label{fig:32-bit_and_or}
+\end{figure}
+
+\newpage
+
+\noindent
+Combining all our techniques so far, we can create a simple ALU:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/comb/alu.png}
+  \caption{ Here shows a basic ALU that can perform addition, subtraction, AND, and OR operations.
+  Starting from the left, we have 2 inputs $A$ and $B$ both of variable bit-length $n$.
+  At the top we have our 2-bit OPCODE. The OPCODE selects which operation to perform via a 2-4 decoder (DEC),
+  leading to 2 control lines (Control$_0$ and Control$_1$). Control$_0$ ($C_0$), if $C_0=0$ then (AND and ADD) are selected, else (OR and SUB) are selected
+  Control$_1$ ($C_1$), if $C_1=0$ then the boolean operations (AND or OR) is the Result; Otherwise (ADD or SUB) is the Result. The ADD and SUB operations share the same 32-bit adder/subtractor circuit from Figure (\ref{fig:fa-subtract})
+  E.g., OPCODE = 10, $C_0=1$ and $C_1=0$, performs subtraction. We have additional outputs, \textbf{`Zero'}, which determines if the output is zero; 1 (true) and 0 (false).
+  Then \textbf{`Sign'}, which relies on two's complement formatting to acquire the integer sign $n_0$ the left-most bit. And then of course
+  our `Carry' and `Overflow' from our modified FA. \cite{villanova_alu}
+  }
+  \label{fig:alu}
+\end{figure}
