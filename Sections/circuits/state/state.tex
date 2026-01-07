@@ -2,7 +2,7 @@
 
 \noindent
 If we want to have a circuit that can \textbf{store} information, say ``Do $x$ if the previous input was $y$''
-(E.g., traffic lights). 
+(E.g., traffic lights).
 
 To start building intuition lets start by seeing what happens when we connect
 gate outputs to other gate inputs in a loop, creating a \textbf{feedback loop} \cite{core_dumped_transistors}:
@@ -51,10 +51,15 @@ the output to 0. Lets see what happens when we keep the second input on with an 
 \noindent
 This circuit is called an:
 \begin{Def}[AND-OR Latch]
-    
+
     An \textbf{AND-OR Latch} is a basic memory element that can store one bit of information. 
     It has two inputs, labeled `S' (Set) and `R' (Reset), and a single output `Q'.
 
     However, this design has a critical flaw: if both `S' and `R' are set to 1 simultaneously creates an 
     \textbf{invalid state}, and the output hangs on 0, ignoring the 1 that's being ``set''.
 \end{Def}
+
+\noindent
+Next we create a more sophisticated latch that avoids this invalid state.
+
+\newpage 
