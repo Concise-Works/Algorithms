@@ -1,4 +1,4 @@
-\subsection{Sequential Logic: Building Memory (RAM/DRAM)}
+\subsection{Sequential Logic: Building Memory (RAM)}
 
 \noindent
 If we want to have a circuit that can \textbf{store} information, say ``Do $x$ if the previous input was $y$''
@@ -63,3 +63,72 @@ This circuit is called an:
 Next we create a more sophisticated latch that avoids this invalid state.
 
 \newpage 
+
+\noindent
+Let's work through improving the design of the AND-OR latch step by step:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/gated_latch.png}
+  \caption{1) We attempt to combine the SET and RESET lines to drive our `Data'; However, 
+  this doesn't store information, as the output immediately follows the input.
+  2) We introduce a `Write Enable' line. Now the data input only is written when we drive Write Enable high.
+  3) Is the combinational logic we were abstracting---Test it out!}
+  \label{fig:gated_latch}
+\end{figure}
+
+\begin{Def}[Gated Latch]
+
+  A \textbf{Gated Latch} is a memory element that stores one bit of information. It has three inputs: `Data', `Write Enable', and a single output `Q'.
+  When `Write Enable' is high, the value on the `Data' input is stored in the latch and reflected on the output `Q'.
+\end{Def}
+
+\newpage 
+
+\noindent 
+Let's do the same thing but with MUXs:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/d_latch.png}
+  \caption{1) Shows our MUX configuration. `Gate' selects which line to output: `Data' or $Q'$.
+  Data contains incoming data, while $Q'$ is the feedback line (stores the last output). 2) Is an abstracted interface for what we call a \textbf{Data Latch} (D-Latch).
+  \cite{terman2017computation_structures}}
+  \label{fig:d_latch}
+\end{figure}
+
+\begin{Def}[Data Latch (D-Latch)]
+
+  A \textbf{Data Latch} (D-Latch) is a memory element that stores one bit of information. It has one 
+  select line `Gate', a `Data' input, a feedback input which store the last output value.
+\end{Def}
+
+\noindent 
+Now we can build interesting circuits with combinational logic and memory:
+\begin{Def}[Sequential Circuit]
+   
+  A \textbf{Sequential Circuit} combines combinational logic with memory devices (like D-Latches) to perform operations that depend on both current past inputs.
+  The memory devices write enable line is often controlled by an oscillating clock signal (high and low). \cite{terman2017computation_structures}
+\end{Def}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/seq.png}
+  \caption{A High-level idea of a sequential circuit; `LOAD' possibly controlled by a clock, `INPUT' perhaps a new button press.}
+  \label{fig:sequential_circuit}
+\end{figure}
+
+\noindent
+A new problem arises in this system. If the `LOAD' signal is high for too long, 
+it may write multiple times, causing unintended behavior. 
+
+Say we had a sequential circuit measures the average of the temperature outside:
+Our `INPUT' a temperature reading, `LOAD' a clock that goes high every 30 minutes,
+and our combinational logic averages the current reading with the stored reading.
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/temp.png}
+  \caption{A sequential circuit that averages temperature readings every 30 minutes.}
+  \label{fig:temp_seq}
+  
+\end{figure}
