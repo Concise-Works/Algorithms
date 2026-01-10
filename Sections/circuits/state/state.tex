@@ -118,17 +118,47 @@ Now we can build interesting circuits with combinational logic and memory:
 \end{figure}
 
 \noindent
-A new problem arises in this system. If the `LOAD' signal is high for too long, 
-it may write multiple times, causing unintended behavior. 
-
-Say we had a sequential circuit measures the average of the temperature outside:
-Our `INPUT' a temperature reading, `LOAD' a clock that goes high every 30 minutes,
-and our combinational logic averages the current reading with the stored reading.
+However, say we wanted to 
+load a 1 into a D-latch controlled integer-sum circuit (initially 0):\\
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\textwidth]{Sections/circuits/state/temp.png}
-  \caption{A sequential circuit that averages temperature readings every 30 minutes.}
-  \label{fig:temp_seq}
-  
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/inf_loop.png}
+  \caption{ A D-latch (DL) controlled integer-sum circuit. The $\emptyset$ symbolizes no input/output (off),
+  and the bubbled numbers indicate order of events. i) Our starting state, we input 1,
+  and since the DL isn't enabled yet, there is no output from the combinational device (CD). 
+  ii) The clock goes high, enabling the DL. The CD outputs 1 while sending it back to the DL.
+  iii) Again, the clock is still high, so the DL writes 1 back to the CD, outputting 2 while sending 2 back to the DL.
+  This would continue indefinitely, \underline{\textbf{causing an infinite loop}.}}
+  \label{fig:infinite_loop}
+\end{figure}
+
+\begin{Note}
+   \textbf{Note:} Timing is everything in sequential logic circuits. Though we will address this glaring issue shortly,
+    timing electrical charges throughout an entire circuit is a complex issue. We will not address every single nuance when 
+    it comes to electrical charges, but rather focus on the high level ideas, which could be extended to 
+    other systems that perhaps don't utilize the same finicky electrical properties; For example, these systems could be built one-to-one
+    in a popular sandbox game called \href{https://youtu.be/nfIRIInU2Vg?list=PLu91RBp7wQku7mdZCrmIPhNPgpSzujqWM&t=61}{Minecraft}, or even with \href{https://youtu.be/IxXaizglscw?si=3EB-HOjPRHkHy70g}{water and pipes}.
+\end{Note}
+\newpage
+
+\noindent
+Our goal is to only register the input value once, i.e., when we turn it on, i.e.,
+the rising edge. Now just as a ticket booth person needs a bouncer to only let one person in at a time to
+register their ticket, we need a buffer to stop the signal from propagating through the circuit multiple times.
+What if we created our digital ``bouncer'' with another D-Latch?
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/ff_latch.png}
+  \caption{i) Shows 2 D-latches attached to one another, D-Latch$_1$ and D-Latch$_2$,
+  which we'll call $D1$ and $D2$ respectively. $D1$ will act as our ``bouncer''.
+  So when the clock is low, $D1$ prepares the data $D$ for $D2$. Once the clock goes high,
+  $D1$ blocks new data, serving $Q'$ (the last written $D$) to $D2$, which then writes $Q'$ to its output $Q$.
+  ii) Is a the signal timing diagram for the circuit in (i). Notice the bubbled numbers and their
+  intersections: 1) The $CLK$ goes low, loading data $D$ into $Q'$. 2) $CLK$ goes high, $Q'$
+  is written to $Q$. 3) $CLK$ goes low again, loading new data $D$ into $Q'$. 4) $CLK$ goes high again,
+  $Q'$ is written to $Q$. 5) $D$ changes while $CLK$ is low, so $Q'$ updates. 6) $CLK$ goes high, writing $Q'$ to $Q$.
+  7) $D$ had changed while $CLK$ was high, $Q'$ remained steady until $CLK$ went low again.} 
+  \label{fig:ff_latch}
 \end{figure}
