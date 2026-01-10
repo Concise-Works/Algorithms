@@ -1,4 +1,4 @@
-\subsection{Sequential Logic: Building Memory (RAM)}
+\subsection{Sequential Logic: Building Memory Latches}
 
 \noindent
 If we want to have a circuit that can \textbf{store} information, say ``Do $x$ if the previous input was $y$''
@@ -162,3 +162,18 @@ What if we created our digital ``bouncer'' with another D-Latch?
   7) $D$ had changed while $CLK$ was high, $Q'$ remained steady until $CLK$ went low again.} 
   \label{fig:ff_latch}
 \end{figure}
+
+\newpage 
+
+\noindent 
+The circuit in Figure (\ref{fig:ff_latch}) is called a:
+\begin{Def}[Data Flip-Flop]
+
+  A \textbf{Data Flip-Flop} (D flip-flop) is a memory element that stores one bit of information. It consists of two D-Latches connected in series.
+  The first D-Latch (D1) acts as a buffer, while the second D-Latch (D2) stores the final output. The D Flip-Flop captures the input data on the rising edge of the clock signal (a transition from low to high),
+  ensuring that the output only changes once per clock cycle.
+\end{Def}
+
+\subsection{Creating The Stack: Random Access Memory (RAM)}
+
+
