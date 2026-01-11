@@ -118,7 +118,8 @@ Now we can build interesting circuits with combinational logic and memory:
 \end{figure}
 
 \noindent
-However, say we wanted to 
+Ignoring our 
+one-bit storage limitation for a moment, say we wanted to 
 load a 1 into a D-latch controlled integer-sum circuit (initially 0):\\
 
 \begin{figure}[ht!]
@@ -173,6 +174,38 @@ The circuit in Figure (\ref{fig:ff_latch}) is called a:
   The first D-Latch (D1) acts as a buffer, while the second D-Latch (D2) stores the final output. The D Flip-Flop captures the input data on the rising edge of the clock signal (a transition from low to high),
   ensuring that the output only changes once per clock cycle.
 \end{Def}
+
+\noindent 
+Another convention we must point out from Figure (\ref{fig:ff_latch}) is how signals are triggered:
+\begin{Def}[Edge-Triggered]
+
+  A signal is said to be \textbf{edge-triggered} if it responds to changes in the signal level, 
+  specifically the transition from low to high (rising edge) or high to low (falling edge):\\
+
+  \noindent
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/rf_edge.png}
+
+  \noindent
+  1) Shows the real world electrical signal with visible slopes. 2) Shows an idealized discrete digital signal 
+  (which we have used most of this text).
+\end{Def}
+
+\noindent
+Finally,
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/ff_interface.png}
+  \caption{On the left is the circuit diagram for a D Flip-Flop, and on the right is the abstracted interface;
+  Many texts use the triangle from clock to indicate edge-triggered behavior. \cite{terman2017computation_structures}}
+  \label{fig:ff_symbol}
+\end{figure}
+
+\begin{Note}
+  \textbf{Note:} There are many ways to build these latches, we have shown one way with 
+  Logic Gates and MUXs. The design is not unique, so you may see different designs in other texts.
+\end{Note}
+\newpage
 
 \subsection{Creating The Stack: Random Access Memory (RAM)}
 
