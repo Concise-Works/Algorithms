@@ -208,5 +208,19 @@ Finally,
 \newpage
 
 \subsection{Creating The Stack: Random Access Memory (RAM)}
+\noindent 
+Now that we can store one bit of information, let's see if we can string our one-bit storage devices together to create larger memory units:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/register.png}
+  \caption{1) Shows 8 gated latches connected in parallel, their `Write Enable' (WE) lines
+  are connected to a common load line. 2) Shows the abstracted diagram after the write
+  from (1) goes through. This device is a called an 8-bit \textbf{Register}.}
+  \label{fig:register}
+\end{figure}
 
+\begin{Def}[Register]
 
+  A \textbf{Register} is a memory element that stores $n$-bits of information. It consists of multiple single bit memory devices 
+  sharing a common write enable line, allowing simultaneous writing of all bits to represent larger data values.
+\end{Def}
