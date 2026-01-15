@@ -222,5 +222,56 @@ Now that we can store one bit of information, let's see if we can string our one
 \begin{Def}[Register]
 
   A \textbf{Register} is a memory element that stores $n$-bits of information. It consists of multiple single bit memory devices 
-  sharing a common write enable line, allowing simultaneous writing of all bits to represent larger data values.
+  of some configuration sharing a common write enable line, allowing simultaneous writing of all bits to represent larger data values.
+
+  However, in an electrical circuits, registers require constant power to maintain their state, i.e., they are \textbf{volatile} (temporary) memory devices.
 \end{Def}
+
+\noindent
+In modern computers we might often see 32-bit or 64-bit registers, but if we want to store larger values it 
+becomes quite expensive/inefficient to keep adding more bit lines.
+
+\newpage 
+
+\noindent 
+To compact our design, we attempt to arrange our latches in a grid:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid.png}
+  \caption{A 4x4 grid of latches (16 locations total). Here we write `1' to row 1 and column 2.}
+  \label{fig:grid_latch}
+\end{figure}
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_2.png}
+  \caption{To achieve the row and column selection, we use decoders for both rows and columns.}
+  \label{fig:grid_decoder}
+\end{figure}
+
+\newpage
+\noindent 
+Let's see this in action:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_3.png}
+  \caption{Just how houses are arranged in a grid with streets and avenues,
+  we give each latch an \textbf{address} based on its row and column ($[0001],[0010],\dots,[1111]$).
+  Here we activate the same latch in Figure (\ref{fig:grid_latch}) by selecting $[0101]$. The 
+  address is split into two halves: The higher order bits (first 2) select the row, and the lower order bits (last 2) select the column.}
+  \label{fig:grid_addressing}
+\end{figure}
+
+\begin{Def}[Memory Address] 
+
+  A \textbf{Memory Address} is a unique identifier for a specific location in a memory device, often represented
+  by binary numbers, hexadecimal numbers, or alphanumeric strings.
+\end{Def}
+
+\noindent
+Though this arrangement is more compact, we reverted back to only being able to store one bit per location.
+To fix this, we can combine the ideas from registers and grids:
