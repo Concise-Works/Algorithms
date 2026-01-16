@@ -266,12 +266,92 @@ Let's see this in action:
   \label{fig:grid_addressing}
 \end{figure}
 
-\begin{Def}[Memory Address] 
+\noindent
+We continue to condense our design, combining wires for Write Enable ($WE$) and Read Enable ($RE$):
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_4.png}
+  \caption{1) Combines $D_{in}$ and $D_{out}$ lines, for a $D_{in/out}$ line.
+  Where $D_{out}$ is only active when $RE$ is high via an NFET gate. 2) Shows that 
+  NFET gate turned on when $RE$ is high. Note $D_{in}$ is not affected as $WE$ is low (vice-versa).}
+  \label{fig:grid_read_write}  
+\end{figure}
 
-  A \textbf{Memory Address} is a unique identifier for a specific location in a memory device, often represented
-  by binary numbers, hexadecimal numbers, or alphanumeric strings.
+\newpage 
+\noindent 
+We now connect all these three lines together in each cell of our grid:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_5.png}
+  \caption{Here $D_{in/out}$ (Red), $WE$ (Blue), and $RE$ (Green) lines are combined in each cell of the grid;
+  \textbf{However}, this design writes and reads to \textbf{all} cells.}
+  \label{fig:ram_cell}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_6.png}
+  \caption{Using our addressing method in Figure (\ref{fig:grid_addressing}), if 
+  we set an AND gate to the row and column select lines, feeding into $WE$ and $RE$, with 
+  their AND control lines, we ensure only one cell is written to/read from at a time.
+  Here this cell is selected (red lines), however, we haven't chosen whether to read or write yet.}
+  \label{fig:ram_final}
+\end{figure}
+
+\newpage 
+\noindent
+However, thus far we've achieved storing 1 bit of information per matrix. We can string 
+multiple matrices together to create larger memory units, say, store 4-bits per address:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/matrix.png}
+  \caption{1) Shows the abstracted 4x4 latch matrix with it's address line, $D_{i/o}$ (Data in/out), $WE$ (Write Enable), and $RE$ (Read Enable) lines.
+  2) Shows 4 of these matrices ($m_0$, $m_1$, $m_2$, $m_3$) connected in parallel, $WE$ and $RE$ lines are shared, while $D_{i/o}$ lines are now 4-bits wide. To write
+  we write each bit to its respective matrix at the same address ($m_0$=0, $m_1$=1, $m_2$=1, $m_3$=0), while enabling $WE$. We chose the 
+  address $[1001]$ to write to (boxed in red). To read this value, we disable $WE$ and enable $RE$ at the same address; Then $D_{i/o}$ lines output the stored 4-bit value.}
+  \label{fig:ram_interface}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/matrix_2.png}
+  \caption{Continuing from Figure (\ref{fig:ram_interface}), we abstract even further. We instead 
+  \textbf{stack} each address vertically. Now we can at random choose any address to read from or write to; 
+  Hence we call it---\textbf{Random Access Memory} (RAM).}
+  \label{fig:ram_symbol}
+\end{figure}
+
+\noindent 
+
+We make two final notes:
+
+\begin{Def}[Address-bus \& Data-Bus]
+
+  An address is composed of multiple bits, the \textbf{width}, i.e., number of bits.
+  To make note of this width, we call the address a \textbf{Address-bus} of width $n$.
+
+  Similarly, the data input/output lines are called a \textbf{Data-bus} of width $m$, which scales
+  1-to-1 with the number of latch matrices stacked together.
 \end{Def}
 
-\noindent
-Though this arrangement is more compact, we reverted back to only being able to store one bit per location.
-To fix this, we can combine the ideas from registers and grids:
+\begin{theo}[RAM Bottle-neck]
+
+  For every $n$-bit Address-bus, $2^n$ unique addresses can be accessed. Thus, in a 
+  32-bit system, $2^{32} = 4,294,967,296$ (Bytes) unique addresses can be accessed. I.e,. 4GB of RAM.
+\end{theo} 
+
+\noindent 
+In this section we created static RAM:
+\begir{theo}[Static vs Dynamic RAM]
+
+  \textbf{Static RAM} (SRAM) uses latches to store each bit of data, making it faster and more reliable, but also more expensive and power-consuming.
+  \textbf{Dynamic RAM} (DRAM) uses a MOSFET and a capacitor (stores charge), which are cheaper and can achieve higher densities, but the capacitor
+  constantly needs to be charged to maintain data integrity, making it slower and less reliable.
+\end{theo}
+
+This concludes our discussion on building memory devices with sequential logic.
+
+
+
