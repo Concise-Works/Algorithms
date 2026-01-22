@@ -1,1 +1,443 @@
-\subsection{Digital State \& Sequential Logic}
+\subsection{Sequential Logic: Building Memory Latches}
+
+\noindent
+If we want to have a circuit that can \textbf{store} information, say ``Do $x$ if the previous input was $y$''
+(E.g., traffic lights).
+
+To start building intuition lets start by seeing what happens when we connect
+gate outputs to other gate inputs in a loop, creating a \textbf{feedback loop} \cite{core_dumped_transistors}:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/or_loop.png}
+  \caption{A simple feedback loop using OR gates. 1) Initially both inputs are zero, then the free input
+  is set to 1. 2) The output becomes 1, switching the feedback input to 1. 3) 
+  Now even if the free input is set back to 0, the output remains 1, since one of the OR inputs is still 1.}
+  \label{fig:or_loop}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/and_loop.png}
+  \caption{A simple feedback loop using AND gates. 1) Initially both inputs are one, then the free input
+  is set to 0. 2) The output becomes 0, switching the feedback input to 0. 3) 
+  Now even if the free input is set back to 1, the output remains 0, since one of the AND inputs is still 0.}
+  \label{fig:and_loop}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/combine_loop.png}
+  \caption{Combining the OR and AND feedback loops from Figures (\ref{fig:or_loop}) and (\ref{fig:and_loop}),
+  we get the above. 1) Initially both inputs are 0, output 0, then inputs both are set to 1, resulting in a a 1 output. 2) The output is now 1, and the first 
+  input is set to 0, but the output remains 1, as the second input is still 1, driving the AND gate.}
+  \label{fig:combine_loop}
+\end{figure}
+
+\newpage 
+\noindent
+In the above Figure (\ref{fig:combine_loop}), we can see that turning on the second input, effectively resets 
+the output to 0. Lets see what happens when we keep the second input on with an inverter:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/and_loop2.png}
+  \caption{1) Initially all inputs are 0, output 0. 2) First input is set to 1,
+  output becomes 1. 3) First input is set back to 0, but output remains 1. 
+  4) Second input is set to 1, output becomes 0. 5) We characterize the first 
+  input as the `SET' and the second input as the `RESET'.}
+  \label{fig:sr_latch}
+\end{figure}
+
+\noindent
+This circuit is called an:
+\begin{Def}[AND-OR Latch]
+
+    An \textbf{AND-OR Latch} is a basic memory element that can store one bit of information. 
+    It has two inputs, labeled `S' (Set) and `R' (Reset), and a single output `Q'.
+
+    However, this design has a critical flaw: if both `S' and `R' are set to 1 simultaneously creates an 
+    \textbf{invalid state}, and the output hangs on 0, ignoring the 1 that's being ``set''.
+\end{Def}
+
+\noindent
+Next we create a more sophisticated latch that avoids this invalid state.
+
+\newpage 
+
+\noindent
+Let's work through improving the design of the AND-OR latch step by step:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/gated_latch.png}
+  \caption{1) We attempt to combine the SET and RESET lines to drive our `Data'; However, 
+  this doesn't store information, as the output immediately follows the input.
+  2) We introduce a `Write Enable' line. Now the data input only is written when we drive Write Enable high.
+  3) Is the combinational logic we were abstracting---Test it out!}
+  \label{fig:gated_latch}
+\end{figure}
+
+\begin{Def}[Gated Latch]
+
+  A \textbf{Gated Latch} is a memory element that stores one bit of information. It has three inputs: `Data', `Write Enable', and a single output `Q'.
+  When `Write Enable' is high, the value on the `Data' input is stored in the latch and reflected on the output `Q'.
+\end{Def}
+
+\newpage 
+
+\noindent 
+Let's do the same thing but with MUXs:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/d_latch.png}
+  \caption{1) Shows our MUX configuration. `Gate' selects which line to output: `Data' or $Q'$.
+  Data contains incoming data, while $Q'$ is the feedback line (stores the last output). 2) Is an abstracted interface for what we call a \textbf{Data Latch} (D-Latch).
+  \cite{terman2017computation_structures}}
+  \label{fig:d_latch}
+\end{figure}
+
+\begin{Def}[Data Latch (D-Latch)]
+
+  A \textbf{Data Latch} (D-Latch) is a memory element that stores one bit of information. It has one 
+  select line `Gate', a `Data' input, a feedback input which store the last output value.
+\end{Def}
+
+\noindent 
+Now we can build interesting circuits with combinational logic and memory:
+\begin{Def}[Sequential Circuit]
+   
+  A \textbf{Sequential Circuit} combines combinational logic with memory devices (like D-Latches) to perform operations that depend on both current past inputs.
+  The memory devices write enable line is often controlled by an oscillating clock signal (high and low). \cite{terman2017computation_structures}
+\end{Def}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/seq.png}
+  \caption{A High-level idea of a sequential circuit; `LOAD' possibly controlled by a clock, `INPUT' perhaps a new button press.}
+  \label{fig:sequential_circuit}
+\end{figure}
+
+\noindent
+Ignoring our 
+one-bit storage limitation for a moment, say we wanted to 
+load a 1 into a D-latch controlled integer-sum circuit (initially 0):\\
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/inf_loop.png}
+  \caption{ A D-latch (DL) controlled integer-sum circuit. The $\emptyset$ symbolizes no input/output (off),
+  and the bubbled numbers indicate order of events. i) Our starting state, we input 1,
+  and since the DL isn't enabled yet, there is no output from the combinational device (CD). 
+  ii) The clock goes high, enabling the DL. The CD outputs 1 while sending it back to the DL.
+  iii) Again, the clock is still high, so the DL writes 1 back to the CD, outputting 2 while sending 2 back to the DL.
+  This would continue indefinitely, \underline{\textbf{causing an infinite loop}.}}
+  \label{fig:infinite_loop}
+\end{figure}
+
+\begin{Note}
+   \textbf{Note:} Timing is everything in sequential logic circuits. Though we will address this glaring issue shortly,
+    timing electrical charges throughout an entire circuit is a complex issue. We will not address every single nuance when 
+    it comes to electrical charges, but rather focus on the high level ideas, which could be extended to 
+    other systems that perhaps don't utilize the same finicky electrical properties; For example, these systems could be built one-to-one
+    in a popular sandbox game called \href{https://youtu.be/nfIRIInU2Vg?list=PLu91RBp7wQku7mdZCrmIPhNPgpSzujqWM&t=61}{Minecraft}, or even with \href{https://youtu.be/IxXaizglscw?si=3EB-HOjPRHkHy70g}{water and pipes}.
+\end{Note}
+\newpage
+
+\noindent
+Our goal is to only register the input value once, i.e., when we turn it on, i.e.,
+the rising edge. Now just as a ticket booth person needs a bouncer to only let one person in at a time to
+register their ticket, we need a buffer to stop the signal from propagating through the circuit multiple times.
+What if we created our digital ``bouncer'' with another D-Latch?
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/ff_latch.png}
+  \caption{i) Shows 2 D-latches attached to one another, D-Latch$_1$ and D-Latch$_2$,
+  which we'll call $D1$ and $D2$ respectively. $D1$ will act as our ``bouncer''.
+  So when the clock is low, $D1$ prepares the data $D$ for $D2$. Once the clock goes high,
+  $D1$ blocks new data, serving $Q'$ (the last written $D$) to $D2$, which then writes $Q'$ to its output $Q$.
+  ii) Is a the signal timing diagram for the circuit in (i). Notice the bubbled numbers and their
+  intersections: 1) The $CLK$ goes low, loading data $D$ into $Q'$. 2) $CLK$ goes high, $Q'$
+  is written to $Q$. 3) $CLK$ goes low again, loading new data $D$ into $Q'$. 4) $CLK$ goes high again,
+  $Q'$ is written to $Q$. 5) $D$ changes while $CLK$ is low, so $Q'$ updates. 6) $CLK$ goes high, writing $Q'$ to $Q$.
+  7) $D$ had changed while $CLK$ was high, $Q'$ remained steady until $CLK$ went low again.} 
+  \label{fig:ff_latch}
+\end{figure}
+
+\newpage 
+
+\noindent 
+The circuit in Figure (\ref{fig:ff_latch}) is called a:
+\begin{Def}[Data Flip-Flop]
+
+  A \textbf{Data Flip-Flop} (D flip-flop) is a memory element that stores one bit of information. It consists of two D-Latches connected in series.
+  The first D-Latch (D1) acts as a buffer, while the second D-Latch (D2) stores the final output. The D Flip-Flop captures the input data on the rising edge of the clock signal (a transition from low to high),
+  ensuring that the output only changes once per clock cycle.
+\end{Def}
+
+\noindent 
+Another convention we must point out from Figure (\ref{fig:ff_latch}) is how signals are triggered:
+\begin{Def}[Edge-Triggered]
+
+  A signal is said to be \textbf{edge-triggered} if it responds to changes in the signal level, 
+  specifically the transition from low to high (rising edge) or high to low (falling edge):\\
+
+  \noindent
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/rf_edge.png}
+
+  \noindent
+  1) Shows the real world electrical signal with visible slopes. 2) Shows an idealized discrete digital signal 
+  (which we have used most of this text).
+\end{Def}
+
+\noindent
+Finally,
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/ff_interface.png}
+  \caption{On the left is the circuit diagram for a D Flip-Flop, and on the right is the abstracted interface;
+  Many texts use the triangle from clock to indicate edge-triggered behavior. \cite{terman2017computation_structures}}
+  \label{fig:ff_symbol}
+\end{figure}
+
+\begin{Note}
+  \textbf{Note:} There are many ways to build these latches, we have shown one way with 
+  Logic Gates and MUXs. The design is not unique, so you may see different designs in other texts.
+\end{Note}
+\newpage
+
+\subsection{Creating The Stack: Random Access Memory (RAM)}
+\noindent 
+Now that we can store one bit of information, let's see if we can string our one-bit storage devices together to create larger memory units:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/register.png}
+  \caption{1) Shows 8 gated latches connected in parallel, their `Write Enable' (WE) lines
+  are connected to a common load line. 2) Shows the abstracted diagram after the write
+  from (1) goes through. This device is a called an 8-bit \textbf{Register}.}
+  \label{fig:register}
+\end{figure}
+
+\begin{Def}[Register]
+
+  A \textbf{Register} is a memory element that stores $n$-bits of information. It consists of multiple single bit memory devices 
+  of some configuration sharing a common write enable line, allowing simultaneous writing of all bits to represent larger data values.
+
+  However, in an electrical circuits, registers require constant power to maintain their state, i.e., they are \textbf{volatile} (temporary) memory devices.
+\end{Def}
+
+\noindent
+In modern computers we might often see 32-bit or 64-bit registers, but if we want to store larger values it 
+becomes quite expensive/inefficient to keep adding more bit lines.
+
+\newpage 
+
+\noindent 
+To compact our design, we attempt to arrange our latches in a grid:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid.png}
+  \caption{A 4x4 grid of latches (16 locations total). Here we write `1' to row 1 and column 2.}
+  \label{fig:grid_latch}
+\end{figure}
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_2.png}
+  \caption{To achieve the row and column selection, we use decoders for both rows and columns.}
+  \label{fig:grid_decoder}
+\end{figure}
+
+\newpage
+\noindent 
+Let's see this in action:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_3.png}
+  \caption{Just how houses are arranged in a grid with streets and avenues,
+  we give each latch an \textbf{address} based on its row and column ($[0001],[0010],\dots,[1111]$).
+  Here we activate the same latch in Figure (\ref{fig:grid_latch}) by selecting $[0101]$. The 
+  address is split into two halves: The higher order bits (first 2) select the row, and the lower order bits (last 2) select the column.}
+  \label{fig:grid_addressing}
+\end{figure}
+
+\noindent
+We continue to condense our design, combining wires for Write Enable ($WE$) and Read Enable ($RE$):
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_4.png}
+  \caption{1) Combines $D_{in}$ and $D_{out}$ lines, for a $D_{in/out}$ line.
+  Where $D_{out}$ is only active when $RE$ is high via an NFET gate. 2) Shows that 
+  NFET gate turned on when $RE$ is high. Note $D_{in}$ is not affected as $WE$ is low (vice-versa).}
+  \label{fig:grid_read_write}  
+\end{figure}
+
+\newpage 
+\noindent 
+We now connect all these three lines together in each cell of our grid:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_5.png}
+  \caption{Here $D_{in/out}$ (Red), $WE$ (Blue), and $RE$ (Green) lines are combined in each cell of the grid;
+  \textbf{However}, this design writes and reads to \textbf{all} cells.}
+  \label{fig:ram_cell}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/grid_6.png}
+  \caption{Using our addressing method in Figure (\ref{fig:grid_addressing}), if 
+  we set an AND gate to the row and column select lines, feeding into $WE$ and $RE$, with 
+  their AND control lines, we ensure only one cell is written to/read from at a time.
+  Here this cell is selected (red lines), however, we haven't chosen whether to read or write yet.}
+  \label{fig:ram_final}
+\end{figure}
+
+\newpage 
+\noindent
+However, thus far we've achieved storing 1 bit of information per matrix. We can string 
+multiple matrices together to create larger memory units, say, store 4-bits per address:
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/matrix.png}
+  \caption{1) Shows the abstracted 4x4 latch matrix with it's address line, $D_{i/o}$ (Data in/out), $WE$ (Write Enable), and $RE$ (Read Enable) lines.
+  2) Shows 4 of these matrices ($m_0$, $m_1$, $m_2$, $m_3$) connected in parallel, $WE$ and $RE$ lines are shared, while $D_{i/o}$ lines are now 4-bits wide. To write
+  we write each bit to its respective matrix at the same address ($m_0$=0, $m_1$=1, $m_2$=1, $m_3$=0), while enabling $WE$. We chose the 
+  address $[1001]$ to write to (boxed in red). To read this value, we disable $WE$ and enable $RE$ at the same address; Then $D_{i/o}$ lines output the stored 4-bit value.}
+  \label{fig:ram_interface}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/matrix_2.png}
+  \caption{Continuing from Figure (\ref{fig:ram_interface}), we abstract even further. We instead 
+  \textbf{stack} each address vertically. Now we can at random choose any address to read from or write to; 
+  Hence we call it---\textbf{Random Access Memory} (RAM).}
+  \label{fig:ram_symbol}
+\end{figure}
+
+\newpage
+\noindent 
+
+We make some final notes:
+
+\begin{Def}[Address-bus \& Data-Bus]
+
+  An address is composed of multiple bits, the \textbf{width}, i.e., number of bits.
+  To make note of this width, we call the address a \textbf{Address-bus} of width $n$.
+
+  Similarly, the data input/output lines are called a \textbf{Data-bus} of width $m$, which scales
+  1-to-1 with the number of latch matrices stacked together.
+\end{Def}
+
+\begin{theo}[RAM Bottle-neck]
+
+  For every $n$-bit Address-bus, $2^n$ unique addresses can be accessed. Thus, in a 
+  32-bit system, $2^{32} = 4,294,967,296$ (Bytes) unique addresses can be accessed. I.e,. 4GB of RAM.
+\end{theo} 
+
+\noindent 
+In this section we created static RAM:
+\begin{theo}[Static vs Dynamic RAM]
+
+  \textbf{Static RAM} (SRAM) uses latches to store each bit of data, making it faster and more reliable, but also more expensive and power-consuming.
+  \textbf{Dynamic RAM} (DRAM) uses a MOSFET and a capacitor (stores charge), which are cheaper and can achieve higher densities, but the capacitor
+  constantly needs to be charged to maintain data integrity, making it slower and less reliable.
+\end{theo}
+
+\noindent
+This concludes our discussion on memory devices. In the next section (next page), 
+we'll create the CPU to run programs.
+
+\subsection{Creating a CPU}
+In the following page we'll put our RAM and ALU together to create a simple CPU. 
+We'll first show the design (i.e., architecture), then explain each component
+through various figures. So don't worry about understanding what all the variables mean 
+at once.
+
+\vfill
+
+\begin{center}
+    \textit{Continued on next page...}
+\end{center}
+
+\vfill
+
+\newpage 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu.png}
+  \caption{This is \textit{a} CPU design and not unique, more to illustrate fundamental concepts.\cite{coredumped_cpu}}
+  \label{fig:cpu_architecture}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_2.png}
+  \caption{We use the first 2 bits of the instruction register (IR) to select WR (write register).
+  The next 2 bits select which register, here $R_1$. The last 4 bits are written to that register.}
+  \label{fig:cpu_pc_ir}
+\end{figure}
+
+\newpage 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_3.png}
+  \caption{We now do the same for $R_2$, writing $[0101]$ which is decimal 5.}
+  \label{fig:cpu_r2}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_4.png}
+  \caption{The first 2 bits now represent STORE ($00$), writing $R_2$ into address $[1001]$ as RAM WE and $R_2$'s RE is high.}
+\end{figure}
+
+\newpage 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_5.png}
+  \caption{The first 2 bits now represent LOAD ($01$), reading from address $[1001]$ into $R_0$ as RAM RE and $R_0$'s WE is high.}
+  \label{fig:cpu_alu}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_6.png}
+  \caption{We swap back to STORE ($00$), writing address $[1111]$ into $R_2$.}
+  \label{fig:cpu_final}
+\end{figure}
+
+\newpage 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_7.png}
+  \caption{We change the first 2 bits to $10$, the ALU. Now the next 2 bits select the operation, $10$ for SUB;
+  The above decoder line ($DEC_1$) isn't active as it requires the AND from a LOAD/STORE signal.
+  The next 2 bits select $B$, here $R_0$, and the last 2 bits select $A$, here $R_1$ ($A$ and $B$ MUX components off screen).}
+  \label{fig:cpu_end}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_8.png}
+  \caption{Continuing from Figure (\ref{fig:cpu_end}), shrinking our diagram to see the 
+  whole picture for the ALU operation; Here we perform $A - B = 0011-0101 = 3-5=-2$.
+  }
+  \label{fig:cpu_complete}
+\end{figure}
+
+\noindent
+Next steps may include finding a way to reroute the ALU output back to one of the $R_i$ general purpose 
+registers, or map alphanumeric strings, e.g., `SUB'$\to 1010$, creating a programming language; However we stop here. This should give the general idea to build even more complex systems.
