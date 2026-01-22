@@ -326,7 +326,7 @@ multiple matrices together to create larger memory units, say, store 4-bits per 
 \newpage
 \noindent 
 
-We make two final notes:
+We make some final notes:
 
 \begin{Def}[Address-bus \& Data-Bus]
 
@@ -353,7 +353,91 @@ In this section we created static RAM:
 \end{theo}
 
 \noindent
-This concludes our discussion on building memory devices with sequential logic.
+This concludes our discussion on memory devices. In the next section (next page), 
+we'll create the CPU to run programs.
 
+\subsection{Creating a CPU}
+In the following page we'll put our RAM and ALU together to create a simple CPU. 
+We'll first show the design (i.e., architecture), then explain each component
+through various figures. So don't worry about understanding what all the variables mean 
+at once.
 
+\vfill
 
+\begin{center}
+    \textit{Continued on next page...}
+\end{center}
+
+\vfill
+
+\newpage 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu.png}
+  \caption{This is \textit{a} CPU design and not unique, more to illustrate fundamental concepts.\cite{coredumped_cpu}}
+  \label{fig:cpu_architecture}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_2.png}
+  \caption{We use the first 2 bits of the instruction register (IR) to select WR (write register).
+  The next 2 bits select which register, here $R_1$. The last 4 bits are written to that register.}
+  \label{fig:cpu_pc_ir}
+\end{figure}
+
+\newpage 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_3.png}
+  \caption{We now do the same for $R_2$, writing $[0101]$ which is decimal 5.}
+  \label{fig:cpu_r2}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_4.png}
+  \caption{The first 2 bits now represent STORE ($00$), writing $R_2$ into address $[1001]$ as RAM WE and $R_2$'s RE is high.}
+\end{figure}
+
+\newpage 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_5.png}
+  \caption{The first 2 bits now represent LOAD ($01$), reading from address $[1001]$ into $R_0$ as RAM RE and $R_0$'s WE is high.}
+  \label{fig:cpu_alu}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_6.png}
+  \caption{We swap back to STORE ($00$), writing address $[1111]$ into $R_2$.}
+  \label{fig:cpu_final}
+\end{figure}
+
+\newpage 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_7.png}
+  \caption{We change the first 2 bits to $10$, the ALU. Now the next 2 bits select the operation, $10$ for SUB;
+  The above decoder line ($DEC_1$) isn't active as it requires the AND from a LOAD/STORE signal.
+  The next 2 bits select $B$, here $R_0$, and the last 2 bits select $A$, here $R_1$ ($A$ and $B$ MUX components off screen).}
+  \label{fig:cpu_end}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{Sections/circuits/state/cpu_8.png}
+  \caption{Continuing from Figure (\ref{fig:cpu_end}), shrinking our diagram to see the 
+  whole picture for the ALU operation; Here we perform $A - B = 0011-0101 = 3-5=-2$.
+  }
+  \label{fig:cpu_complete}
+\end{figure}
+
+\noindent
+Next steps may include finding a way to reroute the ALU output back to one of the $R_i$ general purpose 
+registers, or map alphanumeric strings, e.g., `SUB'$\to 1010$, creating a programming language; However we stop here. This should give the general idea to build even more complex systems.
