@@ -1,44 +1,50 @@
-\section{CPU Arichitecture}
+\section{What's a Computer?}
 \label{sec:cpu_memory}
 
 \noindent
-This section provides a high-level overview of the CPU to provide context/motivation for the following algorithms and data structures.
+This section is quite definition-rich to get us started, but we quickly shift straight 
+into discussing our first data-structures, the \textbf{Stack \& Heap}, and associated algorithms.
+
+\begin{Def}[Computer]
+
+    A \textbf{computer}, is a device which takes input and computes an output 
+    based on a set of instructions called a \textbf{program}.
+\end{Def}
 
 \begin{Def}[Central Processing Unit (CPU)]
 
-    The \textbf{CPU (Central Processing Unit)}, is a hardware component that \emph{computes} instructions within a computer.
+    The \textbf{CPU (Central Processing Unit)}, is a hardware component that \emph{computes} instructions within a \emph{computer}.
     Abstract models that define interfaces between hardware and software for a CPU are called \textbf{instruction set architectures (ISA)}.
     
     Possible operations are detailed as \textbf{opcodes} (operation codes), which are numeric identifiers for each instruction. 
     Moreover, the ISA defines supported data types, \textbf{registers (temporary storage locations)}, and addressing modes (ways to access memory).\\
 
     \noindent
-    ISA's are defines the instruction set, which allows for flexibility in hardware performance needs. This various categories:
-    \begin{itemize}
-        \item \textbf{CISC (Complex Instruction Set Computing):} Large number of complex instructions (multiple operations per instruction).
-        \item \textbf{RISC (Reduced Instruction Set Computing):} Small set of simple/efficient instructions.
-        \item \textbf{VLIW (Very Long Instruction Word):} Enables instruction parallelism (simultaneous execution).
-        \item \textbf{EPIC (Explicitly Parallel Instruction Computing):} More explicit control over parallel execution.
-    \end{itemize}
-    \noindent
-    Smaller more theoretical architectures exists such as \textbf{MISC (Minimal Instruction Set Computing)} and \textbf{OISC (One Instruction Set Computing)}, which are not used in practice.
-    Popular CPU architectures include x86\_64, and ARM64 (64-bit), originating from x86 and ARM (32-bit). 
+    ISA's define an instruction set, which allows for flexibility in hardware performance needs.
+    Popular CPU architectures include \textbf{x86\_64, and ARM64 (64-bit)} systems, originating from \textbf{x86 and ARM (32-bit)} systems (we'll discuss what a `\emph{bit}' is later on). 
     
-    The implementation of a CPU on a circuit board is called a \textbf{microprocessor}. Multiple CPUs on a single circuit board are \textbf{multi-core processors}, where each \emph{core}
-    is a fully functional CPU.
+    The implementation of a CPU on a circuit board (a medium to house the CPU) is called a \textbf{microprocessor}. Multiple CPUs on a single circuit board are \textbf{multi-core processors}, where each \emph{core} (CPU)
+    makes up one processing unit.
 \end{Def}
+
+\begin{Tip}
+The CPU is often compared to as the \textbf{brain} of the computer, \textbf{but} really the CPU is the computer itself, as it does the \emph{computing}.
+Other things we associate with computers (e.g., monitor, keyboard, mouse, speakers, etc.) are just peripherals that interact with the CPU.
+\end{Tip}
 
 \newpage
 \begin{Def}[CPU Anatomy: Von Neumann Architecture]
 
+
+
     Modern computers operate on the \textbf{Von Neumann architecture}, which consists of three primary components:
     \begin{itemize}
-        \item \textbf{ALU (Arithmetic Logic Unit):} Performs arithmetic and logical operations (e.g., addition, subtraction, AND, OR).
+        \item \textbf{ALU (Arithmetic Logic Unit):} Performs arithmetic and logical operations.
         \item \textbf{Control Unit (CU):} Directs the operation of the CPU, fetching and decoding instructions, and controlling the flow of data.
-        \item \textbf{Memory Unit (MU):} Manages data storage and retrieval, including registers and cache memory.
+        \item \textbf{Memory Unit (MU):} Manages data storage and retrieval.
     \end{itemize}
     \noindent
-    All these components have volatile memory, lost when the computer is turned off.
+    All these components have volatile memory (lost when the computer is turned off).
 \end{Def}
 
 \begin{Def}[CPU Execution Flow]
@@ -57,25 +63,29 @@ This section provides a high-level overview of the CPU to provide context/motiva
     This cycle is repeated until the program completes or an interrupt occurs.
 \end{Def}
 
-\begin{Def}[Registers]
+\begin{Def}[Registers \& RAM]
 
     \label{def:registers}
 
-    \textbf{Registers} are small, high-speed storage locations within the CPU that hold data temporarily during execution. 
-    Common types of registers include:
+    \textbf{Registers} are small, high-speed storage locations within the CPU that hold data temporarily during execution.
+    The two main methods of use are:
     \begin{itemize}
-        \item \textbf{General-Purpose Registers (GPR):} Hold general data storage and manipulation.
-        \item \textbf{Special-Purpose Registers:} For specific functions, such as a reference to the current line of code.
-        \item \textbf{Floating-Point Registers:} Floating-point arithmetic (e.g., decimal numbers).
+        \item \textbf{General-Purpose Registers (GPR):} Hold general data storage and manipulation. They may 
+        be accompanied by other specialized registers.
+        \item \textbf{Random Access Memory (RAM):} Is when multiple registers are combined to 
+        form a larger units of memory. Though this is slower as we have to find where data is stored.
     \end{itemize}
     \noindent
-    Registers are faster than main memory (RAM) and are used to store frequently accessed data during program execution.
 \end{Def}
+
+\begin{Tip}
+It's akin to having pockets (registers) to quickly access items, versus a backpack (RAM) for larger items that take longer to swap out and use.
+\end{Tip}
 
 \newpage
 
 \noindent
-The following is an example of the primary registers in the x86-32 (IA-32) architecture, which is a CISC architecture.
+The following is an example of the primary registers in the x86-32 (IA-32) architecture.
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|c|l|}
@@ -94,7 +104,7 @@ EIP    & 32-bit & Instruction pointer (program counter)   \\
 EFLAGS & 32-bit & Flags / status register (ZF, CF, OF…)   \\
 \hline
 \end{tabular}
-\caption{Primary registers of the x86-32 (IA-32) architecture. \textbf{Note:} Registers are prefixed with \underline{`E' for 32-bit, `R' for 64-bit in x86-64}.}
+\caption{Primary registers of the x86-32 (IA-32) architecture. \textbf{Note:} Registers are prefixed with \underline{`E' for 32-bit, `R' for 64-bit in x86-64} (The R isn't shown as this is a 32-bit architecture).}
 \end{table}
 
 
@@ -106,8 +116,8 @@ EFLAGS & 32-bit & Flags / status register (ZF, CF, OF…)   \\
     The program itself is broken up such as follows:
     \begin{itemize}
         \item \textbf{Text Segment:} The part of the program which contains the executable code.
-        \item \textbf{Data Segment:} The part of the program which contains global and static variables.
-        \item \textbf{Machine Code:} The compiled code of the program, which is executed by the CPU.
+        \item \textbf{Data Segment:} The part of the program which contains variables storing data.
+        \item \textbf{Machine Code:} The compiled (translated) code of the program (data \& text), which is executed by the CPU.
     \end{itemize}
 
     \noindent
@@ -224,7 +234,7 @@ To learn more on cybersecurity, consider our other text \underline{\href{https:/
 
     \label{ex:student_class}
 
-    Consider a simple `Student' class in an object-oriented programming language:
+    Consider a simple `Student' class (blueprint) in an object-oriented programming language:
 
     \begin{lstlisting}[language=Java, numbers=none]
     public class Student {
