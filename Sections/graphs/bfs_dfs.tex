@@ -69,7 +69,7 @@ Watch this entire section: \href{https://youtu.be/xHYS6IdpaDc?feature=shared}{BF
     \begin{center}
       \includegraphics[height=2in]{./Sections/graphs/bfs.png}
     \end{center}
-     \caption{A BFS tree traversal preformed on a graph with each level enumerated}\label{fig:bfs}
+     \caption{A BFS tree traversal preformed on a graph with each level enumerated in red}\label{fig:bfs}
   \end{figure}
 
 \begin{theo}[Properties of BFS]
@@ -134,20 +134,19 @@ We create a BFS algorithm from what we know, though not the best implementation:
 
   \newpage
 
+\noindent
 We analyze the time and space complexity in the below Figure (\ref{fig:bfs_q_ana}):
 
 \begin{figure}[h]
     \begin{center}
-      \includegraphics[height=2in]{./Sections/graphs/bfs_q_ana.png}
+      \includegraphics[height=2.3in]{./Sections/graphs/bfs_q_ana.png}
     \end{center}
-     \caption{An analysis showing $O(m+n)$ for both time and space complexity}\label{fig:bfs_q_ana}
+     \caption{Time \& Space complexity $O(m+n)$, for $m$ edges and $n$ nodes.}\label{fig:bfs_q_ana}
   \end{figure}
   \begin{Proof}[Claim 1 for BFS]
     Let $s$ be the root of the BFS tree, then:
     \textbf{Proof:} Induction on the distance from $s$ to $u$.\\
-    \textbf{Base case} ($u = s$): The code sets Level[$s$] = 0, and there is no path to find since the path has length 0.\\
-    \textbf{Induction hypothesis:} For every node $u$ at distance $\leq i$, Claim 1 holds.\\
-    \textbf{Induction step:}
+    \textbf{Base case} ($u = s$): The code sets Level[$s$] = 0, and there is no path to find since the path has length 0. \textbf{Induction hypothesis:} For every node $u$ at distance $\leq i$, Claim 1 holds. \textbf{Induction step:}
     \begin{itemize}
         \item Let $v$ be a node at distance exactly $i + 1$ from $s$. Let $u$ be its parent in the BFS tree.
         \item The code sets Level[$v$] = Level[$u$] + 1.

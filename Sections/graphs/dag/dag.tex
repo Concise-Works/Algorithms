@@ -8,7 +8,7 @@ Graphs may represent a variety of relationships, such as dependencies between ta
 
 \begin{figure}[h]
     \begin{center}
-      \includegraphics[height=1.5in]{./Sections/graphs/dag/dag.png}
+      \includegraphics[height=1.6in]{./Sections/graphs/dag/dag.png}
     \end{center}
      \caption{A DAG depicted by getting dressed for winter. For each node to be processed its \textbf{dependencies} or parents must be processed first.}\label{fig:dag}
 \end{figure}
@@ -23,7 +23,7 @@ Graphs may represent a variety of relationships, such as dependencies between ta
 
 \begin{figure}[h]
     \begin{center}
-      \includegraphics[height=1.5in]{./Sections/graphs/dag/top.png}
+      \includegraphics[height=1.6in]{./Sections/graphs/dag/top.png}
     \end{center}
      \caption{A topological ordering of the DAG in Figure (\ref{fig:dag}) enumerated in red.
      Another possible ordering of $[1,2,3,4,5,6,7]$ is $[5, 6,1,2,3,4,7]$, as $5\rightarrow 6$ is independent.}\label{fig:top}
@@ -37,9 +37,9 @@ Graphs may represent a variety of relationships, such as dependencies between ta
 \end{theo}
 \begin{figure}[h]
     \begin{center}
-      \includegraphics[height=2.5in]{./Sections/graphs/dag/top_sort.png}
+      \includegraphics[width=1\textwidth]{./Sections/graphs/dag/top_sort.png}
     \end{center}
-     \caption{A topological sorting of a DAG $E$ and $v$ nodes}\label{fig:top_sort}
+     \caption{A topological sorting of a DAG $E$ and $v_i$ nodes}\label{fig:top_sort}
 \end{figure} 
 
 \begin{Proof}[Topological Sort via DFS]
@@ -63,7 +63,7 @@ Graphs may represent a variety of relationships, such as dependencies between ta
 
 \begin{Def}[Strongly Connected Components]
 
-    A \textbf{strongly connected component} is a subgraph where every node is reachable from every other node. 
+    A \textbf{strongly connected component} (SCC) is a subgraph where every node is reachable from every other node. 
     Then we say $u\rightsquigarrow v$ and $v\rightsquigarrow u$ are \textbf{mutually reachable}. 
 \end{Def}
 

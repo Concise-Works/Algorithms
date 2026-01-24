@@ -73,38 +73,36 @@ assignments, but minimize the overall lateness.\\
 
 \newpage
 
-\begin{Proof}[Minizing Lateness by Earliest Deadline First]
-    Let $S^*$ be an optimal schedule:
-    \begin{itemize}
-        \item (we know $S^*$ exists as we could exhaustively try all possible orders of jobs)
-    \end{itemize}
+\begin{Def}[Inversion]
+
+    An \textbf{inversion} is a pair of jobs $i$ and $j$ such that $d_i > d_j$ but $i$ is scheduled before $j$.
+\end{Def}
+\begin{Proof}[Minimizing Lateness by Earliest Deadline First]
+    Let $S'$ be an optimal schedule (such a schedule exists through brute force).
     \noindent
-    If $S^*$ has no inversions, then $S^* = S$ by definition of the greedy schedule.
+    If $S'$ has no inversions, then $S' = S$ by definition of the greedy schedule.
     
-    \textbf{Thought experiment:} let’s make $S^*$ more similar to $S$!
-    \begin{itemize}
-        \item While $S^*$ has an inversion of consecutive jobs $i$, $j$, swap jobs $i$ and $j$.
-    \end{itemize}
- 
+    Let there be $S'$ with inversions, and sequentially eliminate them, by swapping adjacent inverted jobs.
     After 
     \[
     \leq \binom{n}{2} = O(n^2)
     \]
 
-    swaps, $S^*$ has no inversions and hence is identical to $S$.
-    
-    
-    We know that swaps can only improve the lateness, hence we have
-    \[
-    \text{Lateness}(S^*) \geq \text{Lateness}(S)
-    \]
-    which means that $S$ is optimal.
+    \noindent
+    swaps, where $n$ is the number of jobs, $S'$ has no inversions and hence is identical to $S$.
+
+    Now, let us examine a single inversion $i$ and $j$ who both finish before time $f_i$; Swapping 
+    them does not increase the lateness of either job. Say $i$ takes $x$ time and $j$ takes $y$ time.
+    Before the swap the time is $t + x + y$, where $t$ is the time before $i$ starts. After the swap the time is $t + y + x$.
+    Thus, the lateness of both jobs remains unchanged. Then by induction, the next pair should also hold, meaning 
+    $S$ retains an optimal schedule.
     \end{Proof}
     \begin{figure}[h]
         \begin{center}
-          \includegraphics[height=2.25in]{./Sections/sched/late/late_proof.png}
+          \includegraphics[width=\textwidth]{./Sections/sched/late/late_proof.png}
         \end{center}
-         \caption{Shows that at the first inversion, $i$ and $j$ are swapped.}\label{fig:late_proof}
+         \caption{Shows an optimal solution with an inversion before and after a swap. Though $j$'s 
+         deadline was satisfied before the swap ending at time $f_i$; after the swap it remains satisfied.}\label{fig:late_proof}
     \end{figure}
     \begin{Tip}
         Say you have to clean your room completely by $\ell$ time. You are 

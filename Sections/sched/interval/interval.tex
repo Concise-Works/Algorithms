@@ -9,7 +9,7 @@ Scheduling problems arise in many areas, such as scheduling classes, tasks, or j
 \end{Def}
 \begin{figure}[h]
     \begin{center}
-      \includegraphics[height=3in]{./Sections/sched/interval/interval.png}
+      \includegraphics[width=1\textwidth]{./Sections/sched/interval/interval.png}
     \end{center}
      \caption{Given jobs $a$ through $h$ we find the largest subset of mutually compatible jobs $\{b,e,h\}$.}\label{fig:interval}
 \end{figure}
@@ -21,11 +21,6 @@ Scheduling problems arise in many areas, such as scheduling classes, tasks, or j
     A \textbf{greedy algorithm} is an algorithm that makes the best choice at each step. I.e.,
     it cares not about the future or big picture, only the immediate benefit, for fast computations.
 \end{Def}
-
-\begin{Note}
-    \textbf{Note:} This definition becomes \textit{loose}, as we encounter problems with backtracking or multiple states. As in each state
-    it makes the best choice with the information available.
-\end{Note}
 
 \textbf{Possible Approaches:} Let $s_j$ and $f_j$ be the start and finish times of job $j$.
 \begin{itemize}
@@ -48,11 +43,17 @@ We choose the \textbf{Earliest Finish Time} approach:
     We can swap $j_{r+1}$ for $i_{r+1}$ in the optimal schedule, and it will still remain compatible. We repeat swaps until $r = k$.
     It’s not possible that $m > k$ because $j_{k+1}$ is compatible with $i_k$.
     \end{Proof}
+
+    \vspace{-1em}
    \begin{figure}[h]
     \begin{center}
-      \includegraphics[height=1.7in]{./Sections/sched/interval/interval_proof.png}
+      \includegraphics[width=1\textwidth]{./Sections/sched/interval/interval_proof.png}
     \end{center}
-     \caption{Shows that at the first divergence, $i_{r+1}$ and .}\label{fig:interval_proof}
+
+     \vspace{-1em}
+     \caption{At the first divergence, $i_{r+1}$, it is interchangeable with $j_{r+1}$ (the optimal solution's choice);
+     As if we were to cut the function $f$ off at this moment, $f_{i_{r+1}} \leq f_{j_{r+1}}$. Hence, by induction,
+     if we were to keep doing this, our greedy solution remains optimal (same number of jobs).}\label{fig:interval_proof}
 \end{figure}
 
 \newpage 
@@ -66,7 +67,7 @@ We choose the \textbf{Earliest Finish Time} approach:
 \end{theo}
 \begin{figure}[h]
     \begin{center}
-      \includegraphics[height=2.3in]{./Sections/sched/interval/interval_sol.png}
+      \includegraphics[width=1\textwidth]{./Sections/sched/interval/interval_sol.png}
     \end{center}
      \caption{Solution to Figure (\ref{fig:interval}) using early finish time first, yielding $\{b,e,h\}$.}\label{fig:interval_sol}
 \end{figure}
@@ -116,10 +117,10 @@ Say we have $n$ classes and $k$ classrooms. What are the minimum number of class
 \textbf{Example:} Let $n=\{a,b,c,\dots,i\}$ be classes with start and finish times. We attempt to find the minimum number of $k$ classrooms needed to schedule all classes.\\
 
 \noindent
-(1.)\label{ex:class_1}
+\label{ex:class_1}
 \begin{figure}[h]
     \begin{center}
-      \includegraphics[height=2in]{./Sections/sched/interval/part/class_4.png}
+      \includegraphics[width=1\textwidth]{./Sections/sched/interval/part/class_4.png}
     \end{center}
      \caption{Though not optimal, here is a possible schedule where $k=4$.}\label{fig:class_4}
 \end{figure}

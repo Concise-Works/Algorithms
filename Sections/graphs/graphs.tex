@@ -97,18 +97,17 @@ Node $a$ has a degree of 2, and node $c$ has a degree of 5.\\
   
 \begin{figure}[h]
   \begin{center}
-    \includegraphics[height=1.5in]{./Sections/graphs/adj_matrix.png}
+    \includegraphics[width=.7\textwidth]{./Sections/graphs/adj_matrix.png}
   \end{center}
    \caption{An adjacency matrix where the path $4\leftrightarrow2$ is highlighted ($A[2][4]$ or $A[4][2]$)}\label{fig:adj_matrix}
 \end{figure}
 \begin{theo}[Properties of Adjacency Matrix]
 
   The following properties hold for adjacency matrices:
-    \begin{itemize}
-        \item An undirected graph is symmetric about the diagonal.
-        \item A directed graph is not symmetric about.
-        \item A weighted graph has the weight of the edge instead of binary.
-    \end{itemize}
+        An \textbf{undirected graph} \underline{is symmetric} about the diagonal.
+        A \textbf{directed graph} \underline{is not} symmetric about.
+        A \textbf{weighted graph} has the weight of the edge in each cell instead of 0s and 1s (0 being no edge).\\
+
     \noindent
     \textbf{Space Complexity:} $\Theta (n^2)$; \textbf{Time Complexities:}\\
     \textbf{Index edge $A[i][j]$:} $\Theta (1)$; \textbf{List neighbors $A[i]$}: $\Theta(n)$; \textbf{List all edges:} $\Theta(n^2)$.
@@ -116,7 +115,7 @@ Node $a$ has a degree of 2, and node $c$ has a degree of 5.\\
 
 \begin{figure}[h]
   \begin{center}
-    \includegraphics[height=1.5in]{./Sections/graphs/adj_matrix_dir.png}
+    \includegraphics[width=.7\textwidth]{./Sections/graphs/adj_matrix_dir.png}
   \end{center}
    \caption{An adjacency matrix of a directed graph with path $4\rightarrow2$ highlighted.}\label{fig:adj_matri_dir}
 \end{figure}
